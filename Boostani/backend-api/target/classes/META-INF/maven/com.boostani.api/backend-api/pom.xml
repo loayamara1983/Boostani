@@ -46,9 +46,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.boostani.api</groupId>
-			<artifactId>facebook-social-connector</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>org.springframework.social</groupId>
+			<artifactId>spring-social-facebook</artifactId>
 		</dependency>
 
 	</dependencies>

@@ -1,0 +1,7 @@
+com\boostani\api\social\facebook\PostToWallAfterConnectInterceptor.class
+com\boostani\api\social\facebook\FacebookFeedController.class
+com\boostani\api\social\facebook\FacebookHandlerInterceptor.class
+com\boostani\api\social\facebook\FacebookExpiredToken.class
+com\boostani\api\social\facebook\FacebookProfileController.class
+com\boostani\api\social\facebook\FacebookFriendsController.class
+com\boostani\api\social\facebook\FacebookPhotosController.class

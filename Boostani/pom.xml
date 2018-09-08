@@ -104,7 +104,7 @@
 	</pluginRepositories>
 	
 	<modules>
-		<module>facebook-social-connector</module>
+		<!-- <module>facebook-social-connector</module> -->
 		<module>twitter-social-connector</module>
 		<module>instagram-social-connect</module>
 		<module>backend-api</module>
