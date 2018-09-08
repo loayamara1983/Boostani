@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.boostani.backend.api.social.signup.SignupForm;
+import com.boostani.backend.api.web.account.AccountSignupForm;
 
 @Entity
 public class Account {
@@ -56,7 +56,7 @@ public class Account {
 		this.country = country;
 	}
 
-	public Account(SignupForm form) {
+	public Account(AccountSignupForm form) {
 		this.setUsername(form.getUsername());
 		this.setSocialPassword(form.getSocialPassword());
 		this.setImageUrl(form.getImageUrl());

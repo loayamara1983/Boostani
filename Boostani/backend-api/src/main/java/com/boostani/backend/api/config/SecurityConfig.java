@@ -11,10 +11,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.connect.ConnectionFactoryLocator;
+import org.springframework.social.connect.UsersConnectionRepository;
+import org.springframework.social.connect.mem.InMemoryUsersConnectionRepository;
+import org.springframework.social.connect.web.ProviderSignInController;
+
+import com.boostani.backend.api.social.security.FacebookConnectionSignup;
+import com.boostani.backend.api.social.security.FacebookSignInAdapter;
 
 /**
  * 
@@ -29,37 +37,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private DataSource dataSource;
 
 	@Autowired
-	public void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().dataSource(dataSource)
-				.usersByUsernameQuery("select username, password, true from Account where username = ?")
-				.authoritiesByUsernameQuery("select username, 'ROLE_USER' from Account where username = ?")
-				.passwordEncoder(passwordEncoder());
+	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private ConnectionFactoryLocator connectionFactoryLocator;
+
+	@Autowired
+	private UsersConnectionRepository usersConnectionRepository;
+
+	@Autowired
+	private FacebookConnectionSignup facebookConnectionSignup;
+
+	@Override
+	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService);
 	}
 
 	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/**/*.css", "/**/*.png", "/**/*.gif", "/**/*.jpg", "/category/*", "/campain/*", "/account/*",
-				"/affilate/*", "/fund/*");
-	}
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().formLogin().loginPage("/signin").loginProcessingUrl("/signin/authenticate")
-				.defaultSuccessUrl("/connect").failureUrl("/signin?param.error=bad_credentials").and().logout()
-				.logoutUrl("/signout").deleteCookies("JSESSIONID").and().authorizeRequests()
-				.antMatchers("/", "/webjars/**", "/admin/**", "/favicon.ico", "/resources/**", "/auth/**", "/signin/**",
-						"/signup/**", "/disconnect/facebook", "/category/**", "/campain/**","/account/**", "/affilate/**", "/fund/**")
-				.permitAll().antMatchers("/**").authenticated().and().rememberMe();
+	protected void configure(final HttpSecurity http) throws Exception {
+		http.csrf().disable().authorizeRequests().antMatchers("/login*", "/signin/**", "/signup/**").permitAll()
+				.anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll().and().logout();
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
-	}
-
-	@Bean
-	public TextEncryptor textEncryptor() {
-		return Encryptors.noOpText();
+	// @Primary
+	public ProviderSignInController providerSignInController() {
+		((InMemoryUsersConnectionRepository) usersConnectionRepository).setConnectionSignUp(facebookConnectionSignup);
+		return new ProviderSignInController(connectionFactoryLocator, usersConnectionRepository,
+				new FacebookSignInAdapter());
 	}
 
 }
