@@ -6,6 +6,7 @@ com\boostani\backend\api\persistence\dao\AccountRepository.class
 com\boostani\backend\api\web\campain\CompainsComisionsStats.class
 com\boostani\backend\api\service\EmailServiceImpl.class
 com\boostani\backend\api\web\fund\FundEmailController.class
+com\boostani\backend\api\config\SwaggerConfig.class
 com\boostani\backend\api\social\security\FacebookConnectionSignup.class
 com\boostani\backend\api\web\campain\CampainController.class
 com\boostani\backend\api\web\account\AccountResponse.class
