@@ -75,6 +75,8 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		
+		<finalName>boostani-dev</finalName>
 	</build>
 
 	<repositories>
@@ -109,4 +111,5 @@
 		<module>instagram-social-connect</module>
 		<module>backend-api</module>
 	</modules>
+	
 </project>

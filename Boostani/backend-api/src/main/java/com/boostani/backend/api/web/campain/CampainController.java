@@ -86,6 +86,10 @@ public class CampainController {
 		Campaigns campaignsList = mapper.convertValue(campaignsObject, Campaigns.class);
 
 		List<List<String>> rows = campaignsList.getRows();
+		if(rows == null || rows.isEmpty()) {
+			return new ResponseEntity<CampainListResponse>(response, HttpStatus.OK);
+		}
+		
 		rows.remove(0);
 
 		List<Campaign> campaigns = populate(rows);
