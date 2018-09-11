@@ -7,6 +7,7 @@ C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backe
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\campain\CampainResponse.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\account\AccountController.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\campain\CompainStats.java
+C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\config\SocialConfig.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\persistence\dao\UsernameAlreadyInUseException.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\fund\FundEmailController.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\EmailServiceImpl.java
@@ -21,6 +22,7 @@ C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backe
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\persistence\dao\CategoryRepository.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\affilate\AffilateCampainsResponse.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\campain\Campaigns.java
+C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\Response.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\social\security\MyUserDetailsService.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\persistence\model\Category.java
 C:\Users\Loay\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\category\CategoryResponse.java

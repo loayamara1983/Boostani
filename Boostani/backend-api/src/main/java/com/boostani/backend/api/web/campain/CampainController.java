@@ -27,15 +27,15 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @Controller
 @RequestMapping(path = "/campain")
 public class CampainController {
 
 	private RestTemplate restTemplate = new RestTemplate();
-
-//	private final String url = "http://boostini.postaffiliatepro.com/scripts/server.php";
-//	private final String adminUsername = "ta.na.mails@gmail.com";
-//	private final String adminPassword = "B00stini76*#";
 
 	private HttpHeaders headers;
 
@@ -79,6 +79,12 @@ public class CampainController {
 		return response.getBody().getFields().get(7).get(1);
 	}
 
+	@ApiOperation(value = "Lists the campains stored on Boostani Merchants server.", response = CampainListResponse.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created account"),
+			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
+			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<CampainListResponse> list() {
@@ -140,6 +146,12 @@ public class CampainController {
 		return campaigns;
 	}
 
+	@ApiOperation(value = "Displays the campain details by a given ID stored on Boostani Merchants server.", response = CampainResponse.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created account"),
+			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
+			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@GetMapping("/{id}")
 	public @ResponseBody ResponseEntity<CampainResponse> findOne(@Valid @PathVariable String id) {

@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boostani.backend.api.service.EmailService;
+import com.boostani.backend.api.web.category.CategoryListResponse;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * 
@@ -33,6 +38,12 @@ public class FundEmailController {
 		this.emailService = emailService;
 	}
 
+	@ApiOperation(value = "Sends a notification email to Boostani admin to transfer an amount", response = FundResponse.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created account"),
+			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
+			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@RequestMapping(value = "/transfer", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<FundResponse> doFund(@Valid @RequestBody FundEmailForm form) {
 		String to = env.getProperty("com.boostani.fund.email.to");

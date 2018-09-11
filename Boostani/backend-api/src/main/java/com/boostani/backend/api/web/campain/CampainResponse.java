@@ -2,8 +2,11 @@ package com.boostani.backend.api.web.campain;
 
 import com.boostani.backend.api.web.Response;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class CampainResponse extends Response{
 
+	@ApiModelProperty(notes = "Displays the campain retrieved from Boostani backend server")
 	private Campaign campaign;
 
 	public Campaign getCampaign() {
