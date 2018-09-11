@@ -1,13 +1,14 @@
 package com.boostani.backend.api.web.account;
 
 import com.boostani.backend.api.persistence.model.Account;
+import com.boostani.backend.api.web.Response;
 
 /**
  * 
  * @author Loay
  *
  */
-public class AccountResponse {
+public class AccountResponse extends Response {
 
 	private Account account;
 
@@ -18,5 +19,5 @@ public class AccountResponse {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
-	
+
 }

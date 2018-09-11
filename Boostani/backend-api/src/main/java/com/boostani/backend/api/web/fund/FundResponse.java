@@ -1,20 +1,12 @@
 package com.boostani.backend.api.web.fund;
 
+import com.boostani.backend.api.web.Response;
+
 /**
  * 
  * @author Loay
  *
  */
-public class FundResponse {
-
-	private String message;
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
+public class FundResponse extends Response {
 
 }

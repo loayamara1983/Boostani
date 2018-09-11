@@ -12,11 +12,12 @@ import com.boostani.backend.api.web.account.AccountSignupForm;
 
 @Entity
 public class Account {
+	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private String username;
     
     private String imageUrl;

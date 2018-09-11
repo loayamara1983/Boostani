@@ -8,9 +8,9 @@ import org.springframework.mail.SimpleMailMessage;
  *
  */
 public interface EmailService {
-	void sendSimpleMessage(String to, String subject, String text);
+	void sendSimpleMessage(String to, String subject, String text) throws Exception;
 
-	void sendSimpleMessageUsingTemplate(String to, String subject, SimpleMailMessage template, String... templateArgs);
+	void sendSimpleMessageUsingTemplate(String to, String subject, SimpleMailMessage template, String... templateArgs) throws Exception;
 
-	void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment);
+	void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment) throws Exception;
 }

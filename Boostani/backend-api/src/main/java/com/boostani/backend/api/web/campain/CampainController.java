@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,32 +33,42 @@ public class CampainController {
 
 	private RestTemplate restTemplate = new RestTemplate();
 
-	private final String url = "http://boostini.postaffiliatepro.com/scripts/server.php";
-	private final String adminUsername = "ta.na.mails@gmail.com";
-	private final String adminPassword = "B00stini76*#";
+//	private final String url = "http://boostini.postaffiliatepro.com/scripts/server.php";
+//	private final String adminUsername = "ta.na.mails@gmail.com";
+//	private final String adminPassword = "B00stini76*#";
 
 	private HttpHeaders headers;
 
 	private ObjectMapper mapper = new ObjectMapper();
+	
+	@Autowired
+	private Environment env;
 
 	@PostConstruct
 	public void setup() {
+		String origin = env.getProperty("com.boostani.header.origin");
+		String referer = env.getProperty("com.boostani.header.referer");
+		
 		headers = new HttpHeaders();
 
 		headers.setAccept(Collections.singletonList(MediaType.ALL));
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		headers.add("Origin", "http://boostini.postaffiliatepro.com");
+		headers.add("Origin", origin);
 		headers.add("Accept-Encoding", "gzip, deflate");
 		headers.add("Accept-Language", "en-US,en;q=0.9,ar;q=0.8");
-		headers.add("Referer", "http://boostini.postaffiliatepro.com/affiliates/panel.php");
+		headers.add("Referer", referer);
 	}
 
 	public String getSessionId() {
+		String username = env.getProperty("com.boostani.admin.username");
+		String password = env.getProperty("com.boostani.admin.password");
+		String url = env.getProperty("com.boostani.base.url");
+		
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String formData = "{\"C\":\"Pap_Api_AuthService\",\"M\":\"authenticate\",\"fields\":[[\"name\",\"value\",\"values\",\"error\"],["
-				+ "\"username\",\"" + adminUsername + "\",null,\"\"],[" + "\"password\",\"" + adminPassword
+				+ "\"username\",\"" + username + "\",null,\"\"],[" + "\"password\",\"" + password
 				+ "\",null,\"\"],[\"roleType\",\"M\",null,\"\"],[\"isFromApi\",\"Y\",null,\"\"],[\"apiVersion\",\"c278cce45ba296bc421269bfb3ddff74\",null,\"\"]]}";
 		map.add("D", formData);
 
@@ -70,6 +82,8 @@ public class CampainController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<CampainListResponse> list() {
+		String url = env.getProperty("com.boostani.base.url");
+
 		CampainListResponse response = new CampainListResponse();
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
@@ -129,6 +143,8 @@ public class CampainController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@GetMapping("/{id}")
 	public @ResponseBody ResponseEntity<CampainResponse> findOne(@Valid @PathVariable String id) {
+		String url = env.getProperty("com.boostani.base.url");
+
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String formData = "{\"C\":\"Gpf_Rpc_Server\", \"M\":\"run\", \"requests\":[{\"C\":\"Pap_Merchants_Campaign_CampaignForm\", \"M\":\"load\", \"fields\":[[\"name\",\"value\"],[\"Id\",\"00f148b3\"]]},{\"C\":\"Pap_Merchants_Campaign_CampaignDetailsAdditionalForm\", \"M\":\"getFields\", \"fieldParam\":\"\"},{\"C\":\"Pap_Merchants_Campaign_CampaignDetailsAdditionalForm\", \"M\":\"load\", \"fields\":[[\"name\",\"value\"],[\"Id\","

@@ -1,6 +1,8 @@
 package com.boostani.backend.api.web.campain;
 
-public class CampainResponse {
+import com.boostani.backend.api.web.Response;
+
+public class CampainResponse extends Response{
 
 	private Campaign campaign;
 

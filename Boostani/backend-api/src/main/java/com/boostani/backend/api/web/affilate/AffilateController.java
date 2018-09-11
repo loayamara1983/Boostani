@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.boostani.backend.api.persistence.dao.AccountRepository;
 import com.boostani.backend.api.web.campain.Campaign;
 import com.boostani.backend.api.web.campain.Campaigns;
 import com.boostani.backend.api.web.campain.Login;
@@ -38,6 +40,9 @@ public class AffilateController {
 
 	private ObjectMapper mapper = new ObjectMapper();
 	
+    @Autowired
+    private AccountRepository accountRepository;
+	
 	@PostConstruct
 	public void setup() {
 		headers = new HttpHeaders();
@@ -52,6 +57,14 @@ public class AffilateController {
 	}
 
 	public String getSessionId() {
+		/*final Account user = accountRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        
+        String name=user.getEmail();
+        String password=user.getPassword();*/
+        
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String formData = "{\"C\":\"Pap_Api_AuthService\",\"M\":\"authenticate\",\"fields\":[[\"name\",\"value\",\"values\",\"error\"],["
@@ -70,6 +83,7 @@ public class AffilateController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<AffilateListResponse> listCampains() {
+		
 		AffilateListResponse response = new AffilateListResponse();
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
