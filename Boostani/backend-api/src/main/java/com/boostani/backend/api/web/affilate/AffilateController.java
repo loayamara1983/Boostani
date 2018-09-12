@@ -17,6 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -91,13 +92,13 @@ public class AffilateController {
 			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/campains", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<AffilateListResponse> listCampains() {
+	public @ResponseBody ResponseEntity<AffilateListResponse> listCampains(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="100") int size) {
 		
 		AffilateListResponse response = new AffilateListResponse();
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
-		String formData = "{\"C\":\"Gpf_Rpc_Server\", \"M\":\"run\", \"requests\":[{\"C\":\"Pap_Features_Common_AffiliateCampaignsGrid\", \"M\":\"getRows\", \"offset\":0, \"limit\":100, \"columns\":[[\"id\"],[\"id\"],[\"name\"],[\"description\"],[\"logourl\"],[\"banners\"],[\"longdescriptionexists\"],[\"commissionsdetails\"],[\"rstatus\"],[\"commissionsexist\"]]}], \"S\":\""
+		String formData = "{\"C\":\"Gpf_Rpc_Server\", \"M\":\"run\", \"requests\":[{\"C\":\"Pap_Features_Common_AffiliateCampaignsGrid\", \"M\":\"getRows\", \"offset\":"+page+", \"limit\":"+size+", \"columns\":[[\"id\"],[\"id\"],[\"name\"],[\"description\"],[\"logourl\"],[\"banners\"],[\"longdescriptionexists\"],[\"commissionsdetails\"],[\"rstatus\"],[\"commissionsexist\"]]}], \"S\":\""
 				+ getSessionId() + "\"}";
 		map.add("D", formData);
 
