@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,9 @@ public class AffilateController {
 	
     @Autowired
     private AccountRepository accountRepository;
+    
+	@Autowired
+	private Environment env;
 	
 	@PostConstruct
 	public void setup() {
@@ -72,9 +76,8 @@ public class AffilateController {
         
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
-		String formData = "{\"C\":\"Pap_Api_AuthService\",\"M\":\"authenticate\",\"fields\":[[\"name\",\"value\",\"values\",\"error\"],["
-				+ "\"username\",\"" + username + "\",null,\"\"],[" + "\"password\",\"" + password
-				+ "\",null,\"\"],[\"roleType\",\"A\",null,\"\"],[\"isFromApi\",\"Y\",null,\"\"],[\"apiVersion\",\"c278cce45ba296bc421269bfb3ddff74\",null,\"\"]]}";
+		String sessionIdFormData = env.getProperty("com.boostani.request.session.id");
+		String formData = String.format(sessionIdFormData, username, password, "A");
 		map.add("D", formData);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -98,8 +101,8 @@ public class AffilateController {
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
-		String formData = "{\"C\":\"Gpf_Rpc_Server\", \"M\":\"run\", \"requests\":[{\"C\":\"Pap_Features_Common_AffiliateCampaignsGrid\", \"M\":\"getRows\", \"offset\":"+page+", \"limit\":"+size+", \"columns\":[[\"id\"],[\"id\"],[\"name\"],[\"description\"],[\"logourl\"],[\"banners\"],[\"longdescriptionexists\"],[\"commissionsdetails\"],[\"rstatus\"],[\"commissionsexist\"]]}], \"S\":\""
-				+ getSessionId() + "\"}";
+		String listFormRequestData = env.getProperty("com.boostani.request.affiliate.campain.list.form");
+		String formData=String.format(listFormRequestData, page, size, getSessionId());
 		map.add("D", formData);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);

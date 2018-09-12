@@ -68,9 +68,8 @@ public class CampainController {
 		
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
-		String formData = "{\"C\":\"Pap_Api_AuthService\",\"M\":\"authenticate\",\"fields\":[[\"name\",\"value\",\"values\",\"error\"],["
-				+ "\"username\",\"" + username + "\",null,\"\"],[" + "\"password\",\"" + password
-				+ "\",null,\"\"],[\"roleType\",\"M\",null,\"\"],[\"isFromApi\",\"Y\",null,\"\"],[\"apiVersion\",\"c278cce45ba296bc421269bfb3ddff74\",null,\"\"]]}";
+		String sessionIdFormData = env.getProperty("com.boostani.request.session.id");
+		String formData = String.format(sessionIdFormData, username, password, "M");
 		map.add("D", formData);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -95,8 +94,9 @@ public class CampainController {
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
-		String formData = "{\"C\":\"Gpf_Rpc_Server\", \"M\":\"run\", \"requests\":[{\"C\":\"Pap_Affiliates_Promo_CampaignsGrid\", \"M\":\"getRows\", \"offset\":"+page+", \"limit\":"+size+", \"columns\":[[\"id\"],[\"id\"],[\"name\"],[\"description\"],[\"logourl\"],[\"banners\"],[\"longdescriptionexists\"],[\"commissionsdetails\"],[\"rstatus\"],[\"commissionsexist\"]]}], \"S\":\""
-				+ getSessionId() + "\"}";
+		String listFormRequestData = env.getProperty("com.boostani.request.campain.list.form");
+		String formData=String.format(listFormRequestData, page, size, getSessionId());
+		
 		map.add("D", formData);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -160,8 +160,9 @@ public class CampainController {
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
-		String formData = "{\"C\":\"Gpf_Rpc_Server\", \"M\":\"run\", \"requests\":[{\"C\":\"Pap_Merchants_Campaign_CampaignForm\", \"M\":\"load\", \"fields\":[[\"name\",\"value\"],[\"Id\",\"00f148b3\"]]},{\"C\":\"Pap_Merchants_Campaign_CampaignDetailsAdditionalForm\", \"M\":\"getFields\", \"fieldParam\":\"\"},{\"C\":\"Pap_Merchants_Campaign_CampaignDetailsAdditionalForm\", \"M\":\"load\", \"fields\":[[\"name\",\"value\"],[\"Id\","
-				+ "\"" + id + "\"]]}], \"S\":" + "\"" + getSessionId() + "\"}";
+		String idFormRequestData = env.getProperty("com.boostani.request.campain.id.form");
+		String formData=String.format(idFormRequestData, id, getSessionId());
+		
 		map.add("D", formData);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
