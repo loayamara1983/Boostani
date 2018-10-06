@@ -5,6 +5,9 @@ import java.util.Date;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class AccountSignupForm {
 
@@ -27,7 +30,9 @@ public class AccountSignupForm {
 	
 	private String email;
     
-    private Date birthDate;
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone="CET")
+	private Date birthDate;
     
     private String phoneNumber;
     

@@ -8,7 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.boostani.backend.api.web.account.AccountSignupForm;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class Account {
@@ -34,6 +37,8 @@ public class Account {
     
     private String lastName;
     
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone="CET")
     private Date birthDate;
     
     private String phoneNumber;
