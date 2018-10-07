@@ -80,7 +80,7 @@ public class CampainController {
 	}
 
 	@ApiOperation(value = "Lists the campains stored on Boostani Merchants server.", response = CampainListResponse.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created account"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully listed all campains"),
 			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
 			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
 			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
@@ -148,7 +148,7 @@ public class CampainController {
 	}
 
 	@ApiOperation(value = "Displays the campain details by a given ID stored on Boostani Merchants server.", response = CampainResponse.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created account"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully found a specific campain"),
 			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
 			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
 			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),

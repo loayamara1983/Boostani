@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boostani.backend.api.service.EmailService;
-import com.boostani.backend.api.web.category.CategoryListResponse;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -39,7 +38,7 @@ public class FundEmailController {
 	}
 
 	@ApiOperation(value = "Sends a notification email to Boostani admin to transfer an amount", response = FundResponse.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created account"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created new fund"),
 			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
 			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
 			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),

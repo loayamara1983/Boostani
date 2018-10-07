@@ -88,7 +88,7 @@ public class AffilateController {
 	}
 
 	@ApiOperation(value = "Lists the affiliates and names of private (public with manual approval) campaigns the affiliates belong to.", response = AffilateListResponse.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created account"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully listed all campains"),
 			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
 			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
 			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
