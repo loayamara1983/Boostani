@@ -30,13 +30,17 @@ com\boostani\backend\api\web\category\CategoryResponse.class
 com\boostani\backend\api\config\Application.class
 com\boostani\backend\api\web\campain\CompainStats.class
 com\boostani\backend\api\persistence\model\Account.class
+com\boostani\backend\api\web\country\Country.class
+com\boostani\backend\api\service\CountryService.class
 com\boostani\backend\api\web\campain\Login.class
 com\boostani\backend\api\social\message\MessageType.class
+com\boostani\backend\api\web\country\CountryResponse.class
 com\boostani\backend\api\web\affilate\AffilateCampainsResponse.class
 com\boostani\backend\api\web\campain\CompainsAllTimeComisions.class
 com\boostani\backend\api\social\message\Message.class
 com\boostani\backend\api\persistence\dao\UsernameAlreadyInUseException.class
 com\boostani\backend\api\web\campain\Campaigns.class
+com\boostani\backend\api\web\country\CountryController.class
 com\boostani\backend\api\web\affilate\AffilateController.class
 com\boostani\backend\api\web\category\CategoryRequest.class
 com\boostani\backend\api\config\SecurityConfig.class
