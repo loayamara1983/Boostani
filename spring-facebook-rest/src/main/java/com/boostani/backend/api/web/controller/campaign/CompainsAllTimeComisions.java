@@ -1,19 +1,13 @@
-package com.boostani.backend.api.web.controller.campain;
+package com.boostani.backend.api.web.controller.campaign;
 
-public class CompainsThisMonthComisions {
+public class CompainsAllTimeComisions {
 
 	private Long totalCommisions;
 	private Long totalSales;
 	private Long totalPendingCommisions;
 	private Long totalUnpaidApprovedCommisions;
 	
-	/**
-	 * @param totalCommisions
-	 * @param totalSales
-	 * @param totalPendingCommisions
-	 * @param totalUnpaidApprovedCommisions
-	 */
-	public CompainsThisMonthComisions(Long totalCommisions, Long totalSales, Long totalPendingCommisions,
+	public CompainsAllTimeComisions(Long totalCommisions, Long totalSales, Long totalPendingCommisions,
 			Long totalUnpaidApprovedCommisions) {
 		super();
 		this.totalCommisions = totalCommisions;
@@ -94,7 +88,7 @@ public class CompainsThisMonthComisions {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CompainsThisMonthComisions other = (CompainsThisMonthComisions) obj;
+		CompainsAllTimeComisions other = (CompainsAllTimeComisions) obj;
 		if (totalCommisions == null) {
 			if (other.totalCommisions != null)
 				return false;
@@ -122,7 +116,7 @@ public class CompainsThisMonthComisions {
 	 */
 	@Override
 	public String toString() {
-		return "ThisMonthComisions [totalCommisions=" + totalCommisions + ", totalSales=" + totalSales
+		return "AllTimeComisions [totalCommisions=" + totalCommisions + ", totalSales=" + totalSales
 				+ ", totalPendingCommisions=" + totalPendingCommisions + ", totalUnpaidApprovedCommisions="
 				+ totalUnpaidApprovedCommisions + "]";
 	}

@@ -45,7 +45,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 			new AntPathRequestMatcher("/swagger-ui.html"),
 			new AntPathRequestMatcher("/webjars/**"),
 			new AntPathRequestMatcher("/signin/**"),
-			new AntPathRequestMatcher("/campain/**"),
+			new AntPathRequestMatcher("/campaign/**"),
 			new AntPathRequestMatcher("/affilate/**"),
 			new AntPathRequestMatcher("/country/**"),
 			new AntPathRequestMatcher("/fund/**"),

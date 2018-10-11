@@ -1,4 +1,4 @@
-package com.boostani.backend.api.web.controller.campain;
+package com.boostani.backend.api.web.controller.campaign;
 
 import java.io.Serializable;
 import java.util.ArrayList;

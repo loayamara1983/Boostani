@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.boostani.backend.api.persistance.dao.UserRepository;
-import com.boostani.backend.api.web.controller.campain.Campaign;
-import com.boostani.backend.api.web.controller.campain.Campaigns;
-import com.boostani.backend.api.web.controller.campain.Login;
+import com.boostani.backend.api.web.controller.campaign.Campaign;
+import com.boostani.backend.api.web.controller.campaign.Campaigns;
+import com.boostani.backend.api.web.controller.campaign.Login;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.annotations.ApiOperation;

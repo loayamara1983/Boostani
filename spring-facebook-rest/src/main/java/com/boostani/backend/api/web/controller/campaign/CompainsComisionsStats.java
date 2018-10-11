@@ -1,4 +1,4 @@
-package com.boostani.backend.api.web.controller.campain;
+package com.boostani.backend.api.web.controller.campaign;
 
 public class CompainsComisionsStats {
 

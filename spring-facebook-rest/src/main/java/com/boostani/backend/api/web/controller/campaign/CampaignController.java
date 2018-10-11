@@ -1,4 +1,4 @@
-package com.boostani.backend.api.web.controller.campain;
+package com.boostani.backend.api.web.controller.campaign;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,8 +33,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @Controller
-@RequestMapping(path = "/campain")
-public class CampainController {
+@RequestMapping(path = "/campaign")
+public class CampaignController {
 
 	private RestTemplate restTemplate = new RestTemplate();
 
@@ -79,7 +79,7 @@ public class CampainController {
 		return response.getBody().getFields().get(7).get(1);
 	}
 
-	@ApiOperation(value = "Lists the campains stored on Boostani Merchants server.", response = CampainListResponse.class)
+	@ApiOperation(value = "Lists the campains stored on Boostani Merchants server.", response = CampaignListResponse.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully listed all campains"),
 			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
 			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
@@ -87,10 +87,10 @@ public class CampainController {
 			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<CampainListResponse> list(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="100") int size) {
+	public @ResponseBody ResponseEntity<CampaignListResponse> list(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="100") int size) {
 		String url = env.getProperty("com.boostani.base.url");
 
-		CampainListResponse response = new CampainListResponse();
+		CampaignListResponse response = new CampaignListResponse();
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
@@ -108,7 +108,7 @@ public class CampainController {
 
 		List<List<String>> rows = campaignsList.getRows();
 		if(rows == null || rows.isEmpty()) {
-			return new ResponseEntity<CampainListResponse>(response, HttpStatus.OK);
+			return new ResponseEntity<CampaignListResponse>(response, HttpStatus.OK);
 		}
 		
 		rows.remove(0);
@@ -116,7 +116,7 @@ public class CampainController {
 		List<Campaign> campaigns = populate(rows);
 		response.setCampaigns(campaigns);
 
-		return new ResponseEntity<CampainListResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<CampaignListResponse>(response, HttpStatus.OK);
 	}
 
 	private List<Campaign> populate(List<List<String>> rows) {
@@ -147,7 +147,7 @@ public class CampainController {
 		return campaigns;
 	}
 
-	@ApiOperation(value = "Displays the campain details by a given ID stored on Boostani Merchants server.", response = CampainResponse.class)
+	@ApiOperation(value = "Displays the campain details by a given ID stored on Boostani Merchants server.", response = CampaignResponse.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully found a specific campain"),
 			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
 			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
@@ -155,7 +155,7 @@ public class CampainController {
 			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@GetMapping("/{id}")
-	public @ResponseBody ResponseEntity<CampainResponse> findOne(@Valid @PathVariable String id) {
+	public @ResponseBody ResponseEntity<CampaignResponse> findOne(@Valid @PathVariable String id) {
 		String url = env.getProperty("com.boostani.base.url");
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
@@ -186,10 +186,10 @@ public class CampainController {
 		campaign.setBanners(fields.get(25).get(1).toString());
 		campaign.setCommissionsExist(fields.get(27).get(1).toString());
 
-		CampainResponse response = new CampainResponse();
+		CampaignResponse response = new CampaignResponse();
 		response.setCampaign(campaign);
 
-		return new ResponseEntity<CampainResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<CampaignResponse>(response, HttpStatus.OK);
 	}
 
 }

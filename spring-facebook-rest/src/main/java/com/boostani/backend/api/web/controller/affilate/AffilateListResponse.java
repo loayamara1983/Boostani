@@ -3,7 +3,7 @@ package com.boostani.backend.api.web.controller.affilate;
 import java.util.Collections;
 import java.util.List;
 
-import com.boostani.backend.api.web.controller.campain.Campaign;
+import com.boostani.backend.api.web.controller.campaign.Campaign;
 import com.boostani.backend.api.web.controller.user.Response;
 
 import io.swagger.annotations.ApiModelProperty;
