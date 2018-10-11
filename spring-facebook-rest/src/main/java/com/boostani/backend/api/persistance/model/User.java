@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.social.security.SocialUserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,7 +30,7 @@ import lombok.Builder;
 // @Value
 @Entity
 @Table(name = "user_account", uniqueConstraints = { @UniqueConstraint(columnNames = { "username" }) })
-public class User implements SocialUserDetails {
+public class User implements UserDetails {
 
 	/**
 	 * 
