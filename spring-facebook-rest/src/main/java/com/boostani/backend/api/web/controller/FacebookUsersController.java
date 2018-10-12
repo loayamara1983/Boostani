@@ -15,7 +15,6 @@ import com.restfb.Parameter;
 import com.restfb.Version;
 import com.restfb.types.User;
 
-
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
@@ -33,15 +32,16 @@ final class FacebookUsersController {
 	@PostMapping("/login")
 	String register(@RequestParam("accessToken") final String accessToken) {
 		DefaultFacebookClient facebookClient = new DefaultFacebookClient(accessToken, Version.LATEST);
-		
-		User facebookUser = facebookClient.fetchObject("me", User.class, Parameter.with("fields",
-                "id, name, email, first_name, last_name, birthday"));
-		
-		String username=facebookUser.getEmail();
-		String password=facebookUser.getId();
-		
+
+		User facebookUser = facebookClient.fetchObject("me", User.class,
+				Parameter.with("fields", "id, name, email, first_name, last_name, birthday"));
+
+		String username = facebookUser.getEmail();
+		String password = facebookUser.getId();
+
 		users.save(com.boostani.backend.api.persistance.model.User.builder().username(username).password(password)
-				.email(username).firstName(facebookUser.getFirstName()).lastName(facebookUser.getLastName()).birthDate(facebookUser.getBirthdayAsDate()).build());
+				.email(username).firstName(facebookUser.getFirstName()).lastName(facebookUser.getLastName())
+				.birthDate(facebookUser.getBirthdayAsDate()).providerId("facebook").build());
 
 		return login(username, password);
 	}

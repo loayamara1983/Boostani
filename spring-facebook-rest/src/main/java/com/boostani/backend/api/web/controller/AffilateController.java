@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
-import com.boostani.backend.api.persistance.dao.UserRepository;
+import com.boostani.backend.api.persistance.model.User;
 import com.boostani.backend.api.web.response.affilate.AffilateListResponse;
 import com.boostani.backend.api.web.response.campaign.Campaign;
 import com.boostani.backend.api.web.response.campaign.Campaigns;
@@ -40,19 +42,16 @@ public class AffilateController {
 	private RestTemplate restTemplate = new RestTemplate();
 
 	private final String url = "http://boostini.postaffiliatepro.com/scripts/server.php";
-	private final String username = "alaa.nobani1982@gmail.com";
-	private final String password = "alaanobani1982";
+//	private final String username = "alaa.nobani1982@gmail.com";
+//	private final String password = "alaanobani1982";
 
 	private HttpHeaders headers;
 
 	private ObjectMapper mapper = new ObjectMapper();
-	
-    @Autowired
-    private UserRepository userRepository;
-    
+
 	@Autowired
 	private Environment env;
-	
+
 	@PostConstruct
 	public void setup() {
 		headers = new HttpHeaders();
@@ -66,15 +65,10 @@ public class AffilateController {
 		headers.add("Referer", "http://boostini.postaffiliatepro.com/affiliates/panel.php");
 	}
 
-	public String getSessionId() {
-		/*final Account user = accountRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
-        }
-        
-        String name=user.getEmail();
-        String password=user.getPassword();*/
-        
+	public String getSessionId(User user) {
+		String username = user.getEmail();
+		String password = user.getPassword();
+
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String sessionIdFormData = env.getProperty("com.boostani.request.session.id");
@@ -85,7 +79,12 @@ public class AffilateController {
 
 		ResponseEntity<Login> response = restTemplate.postForEntity(url, request, Login.class);
 
-		return response.getBody().getFields().get(7).get(1);
+		List<List<String>> fields = response.getBody().getFields();
+		if(fields.size() < 8) {
+			return null;
+		}
+		
+		return fields.get(7).get(1);
 	}
 
 	@ApiOperation(value = "Lists the affiliates and names of private (public with manual approval) campaigns the affiliates belong to.", response = AffilateListResponse.class)
@@ -95,15 +94,23 @@ public class AffilateController {
 			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
 			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/campains", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<AffilateListResponse> listCampains(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="100") int size) {
-		
+	@RequestMapping(value = "/campaings", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<AffilateListResponse> listCampains(@AuthenticationPrincipal final User currentUser, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "100") int size) {
+
 		AffilateListResponse response = new AffilateListResponse();
+
+		String sessionId = getSessionId(currentUser);
+		if(StringUtils.isBlank(sessionId)) {
+			response.setMessage("Unauthorized access to Boostani Backend");
+			return new ResponseEntity<AffilateListResponse>(response, HttpStatus.UNAUTHORIZED);
+		}
+		
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String listFormRequestData = env.getProperty("com.boostani.request.affiliate.campain.list.form");
-		String formData=String.format(listFormRequestData, page, size, getSessionId());
+		String formData = String.format(listFormRequestData, page, size, sessionId);
 		map.add("D", formData);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -114,10 +121,10 @@ public class AffilateController {
 		Campaigns campaignsList = mapper.convertValue(campaignsObject, Campaigns.class);
 
 		List<List<String>> rows = campaignsList.getRows();
-		if(rows == null || rows.isEmpty()) {
+		if (rows == null || rows.isEmpty()) {
 			return new ResponseEntity<AffilateListResponse>(response, HttpStatus.OK);
 		}
-		
+
 		rows.remove(0);
 
 		List<Campaign> campaigns = populate(rows);
