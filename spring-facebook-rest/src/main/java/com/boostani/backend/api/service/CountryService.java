@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.boostani.backend.api.web.controller.country.Country;
+import com.boostani.backend.api.persistance.model.Country;
 
 /**
  * 

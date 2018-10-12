@@ -35,7 +35,6 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 			new AntPathRequestMatcher("/favicon.ico"),
 			new AntPathRequestMatcher("/resources/**"),
 			new AntPathRequestMatcher("/auth/**"),
-			new AntPathRequestMatcher("/users/**"),
 			new AntPathRequestMatcher("/public/**"),
 			new AntPathRequestMatcher("/error/**"),
 			new AntPathRequestMatcher("/v2/api-docs"),
@@ -44,12 +43,9 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 			new AntPathRequestMatcher("/swagger-resources/configuration/security"),
 			new AntPathRequestMatcher("/swagger-ui.html"),
 			new AntPathRequestMatcher("/webjars/**"),
-			new AntPathRequestMatcher("/signin/**"),
 			new AntPathRequestMatcher("/campaign/**"),
-			new AntPathRequestMatcher("/affilate/**"),
 			new AntPathRequestMatcher("/country/**"),
 			new AntPathRequestMatcher("/fund/**"),
-			new AntPathRequestMatcher("/country/**"),
 			new AntPathRequestMatcher("/category/**")
 			);
 	private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
