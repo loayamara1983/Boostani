@@ -64,7 +64,8 @@ public class CategoryController {
 
 		category.setName(categoryRequest.getName());
 		category.setDescription(categoryRequest.getDescription());
-
+		category.setExternalId(categoryRequest.getExternalId());
+		
 		categoryRepository.save(category);
 		
 		CategoryResponse response = new CategoryResponse();

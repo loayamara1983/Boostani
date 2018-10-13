@@ -13,6 +13,8 @@ public class CategoryRequest {
     private String name;
 
     private String description;
+    
+    private Long externalId;
 
     public CategoryRequest() {
         super();
@@ -34,9 +36,19 @@ public class CategoryRequest {
 		this.description = description;
 	}
 
+	public Long getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(Long externalId) {
+		this.externalId = externalId;
+	}
+
 	@Override
 	public String toString() {
-		return "Category [name=" + name + ", description=" + description + "]";
+		return "CategoryRequest [name=" + name + ", description=" + description + ", externalId=" + externalId + "]";
 	}
+
+	
 
 }

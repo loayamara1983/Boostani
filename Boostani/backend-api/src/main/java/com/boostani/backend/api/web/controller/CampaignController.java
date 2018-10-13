@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
@@ -48,7 +49,7 @@ public class CampaignController {
 	private HttpHeaders headers;
 
 	private ObjectMapper mapper = new ObjectMapper();
-	
+
 	@Autowired
 	private Environment env;
 
@@ -56,7 +57,7 @@ public class CampaignController {
 	public void setup() {
 		String origin = env.getProperty("com.boostani.header.origin");
 		String referer = env.getProperty("com.boostani.header.referer");
-		
+
 		headers = new HttpHeaders();
 
 		headers.setAccept(Collections.singletonList(MediaType.ALL));
@@ -72,7 +73,7 @@ public class CampaignController {
 		String username = env.getProperty("com.boostani.admin.username");
 		String password = env.getProperty("com.boostani.admin.password");
 		String url = env.getProperty("com.boostani.base.url");
-		
+
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String sessionIdFormData = env.getProperty("com.boostani.request.session.id");
@@ -84,10 +85,10 @@ public class CampaignController {
 		ResponseEntity<Login> response = restTemplate.postForEntity(url, request, Login.class);
 
 		List<List<String>> fields = response.getBody().getFields();
-		if(fields.size() < 8) {
+		if (fields.size() < 8) {
 			return null;
 		}
-		
+
 		return fields.get(7).get(1);
 	}
 
@@ -99,22 +100,23 @@ public class CampaignController {
 			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<CampaignListResponse> list(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="100") int size) {
+	public @ResponseBody ResponseEntity<CampaignListResponse> list(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "100") int size) {
 		String url = env.getProperty("com.boostani.base.url");
 
 		CampaignListResponse response = new CampaignListResponse();
 
 		String sessionId = getSessionId();
-		if(StringUtils.isBlank(sessionId)) {
+		if (StringUtils.isBlank(sessionId)) {
 			response.setMessage("Unauthorized access to Boostani Backend");
 			return new ResponseEntity<CampaignListResponse>(response, HttpStatus.UNAUTHORIZED);
 		}
-		
+
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String listFormRequestData = env.getProperty("com.boostani.request.campain.list.form");
-		String formData=String.format(listFormRequestData, page, size, getSessionId());
-		
+		String formData = String.format(listFormRequestData, page, size, getSessionId());
+
 		map.add("D", formData);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -125,10 +127,10 @@ public class CampaignController {
 		Campaigns campaignsList = mapper.convertValue(campaignsObject, Campaigns.class);
 
 		List<List<String>> rows = campaignsList.getRows();
-		if(rows == null || rows.isEmpty()) {
+		if (rows == null || rows.isEmpty()) {
 			return new ResponseEntity<CampaignListResponse>(response, HttpStatus.OK);
 		}
-		
+
 		rows.remove(0);
 
 		List<Campaign> campaigns = populate(rows);
@@ -179,8 +181,8 @@ public class CampaignController {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String idFormRequestData = env.getProperty("com.boostani.request.campain.id.form");
-		String formData=String.format(idFormRequestData, id, getSessionId());
-		
+		String formData = String.format(idFormRequestData, id, getSessionId());
+
 		map.add("D", formData);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -210,4 +212,54 @@ public class CampaignController {
 		return new ResponseEntity<CampaignResponse>(response, HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "Lists the campains by categories stored on Boostani Merchants server.", response = CampaignListResponse.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully listed all campains by categories"),
+			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
+			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/categories/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<CampaignListResponse> listByCategories(
+			@RequestParam List<Long> externalCategoriesIds, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "100") int size) {
+		String url = env.getProperty("com.boostani.base.url");
+
+		CampaignListResponse response = new CampaignListResponse();
+
+		String sessionId = getSessionId();
+		if (StringUtils.isBlank(sessionId)) {
+			response.setMessage("Unauthorized access to Boostani Backend");
+			return new ResponseEntity<CampaignListResponse>(response, HttpStatus.UNAUTHORIZED);
+		}
+
+		String categoriesIds = externalCategoriesIds.stream().map(categoryIdAsString -> categoryIdAsString.toString())
+				.collect(Collectors.joining(","));
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+
+		String listFormRequestData = env.getProperty("com.boostani.request.campain.by.category.list.form");
+		String formData = String.format(listFormRequestData, "M", page, size, categoriesIds, getSessionId());
+
+		map.add("D", formData);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		ResponseEntity<List> campaignsResponse = restTemplate.postForEntity(url, request, List.class);
+		Object campaignsObject = campaignsResponse.getBody().get(0);
+
+		Campaigns campaignsList = mapper.convertValue(campaignsObject, Campaigns.class);
+
+		List<List<String>> rows = campaignsList.getRows();
+		if (rows == null || rows.isEmpty()) {
+			return new ResponseEntity<CampaignListResponse>(response, HttpStatus.OK);
+		}
+
+		rows.remove(0);
+
+		List<Campaign> campaigns = populate(rows);
+		response.setCampaigns(campaigns);
+
+		return new ResponseEntity<CampaignListResponse>(response, HttpStatus.OK);
+	}
 }
