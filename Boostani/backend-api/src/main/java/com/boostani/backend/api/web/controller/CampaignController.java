@@ -154,7 +154,13 @@ public class CampaignController {
 			campaign.setStatus(row.get(2));
 			campaign.setName(row.get(3));
 			campaign.setDescription(row.get(4));
-			campaign.setLogoUrl(row.get(5));
+			
+			String logoUrl = row.get(5);
+			if(StringUtils.isNotBlank(logoUrl) && !StringUtils.startsWith(logoUrl, "http://")) {
+				logoUrl = "http:"+logoUrl;
+			}
+			
+			campaign.setLogoUrl(logoUrl);
 			campaign.setCookieLifetime(row.get(6));
 			campaign.setLongDescriptionExists(row.get(7));
 			campaign.setBanners(row.get(8));

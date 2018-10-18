@@ -4,6 +4,7 @@ import static lombok.AccessLevel.PACKAGE;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -87,13 +88,18 @@ final class PublicUsersController {
 			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@PostMapping("/login")
 	public @ResponseBody ResponseEntity<UserResponse> login(@RequestParam("username") final String username, @RequestParam("password") final String password) {
-		String accessToken = authentication.login(username, password)
-				.orElseThrow(() -> new RuntimeException("invalid login and/or password"));
+		UserResponse response = new UserResponse();
+
+		Optional<String> accessToken = authentication.login(username, password);
+		
+		if(!accessToken.isPresent()) {
+			response.setMessage("invalid login and/or password");
+			return new ResponseEntity<UserResponse>(response, HttpStatus.UNAUTHORIZED);
+		}
 		
 		try {
-			UserResponse response = new UserResponse();
 
-			response.setAccessToken(accessToken);
+			response.setAccessToken(accessToken.get());
 			response.setMessage("User logged in");
 			response.setExpiry(expiry());
 
