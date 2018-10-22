@@ -4,6 +4,7 @@ com\boostani\backend\api\web\request\UserRegisterRequest.class
 com\boostani\backend\api\service\EmailServiceImpl.class
 com\boostani\backend\api\persistance\model\UserAuthority.class
 com\boostani\backend\api\web\controller\FacebookUsersController.class
+com\boostani\backend\api\web\response\campaign\CampaignBanner.class
 com\boostani\backend\api\web\controller\CampaignController.class
 com\boostani\backend\api\web\response\campaign\Campaigns.class
 com\boostani\backend\api\persistance\model\Category.class
@@ -36,6 +37,7 @@ com\boostani\backend\api\web\response\country\CountryResponse.class
 com\boostani\backend\api\web\response\campaign\CampaignListResponse.class
 com\boostani\backend\api\web\controller\PublicUsersController.class
 com\boostani\backend\api\service\CountryService.class
+com\boostani\backend\api\web\response\campaign\Banners.class
 com\boostani\backend\api\web\response\user\UserResponse.class
 com\boostani\backend\api\service\JWTTokenService.class
 com\boostani\backend\api\persistance\dao\UserRepository.class

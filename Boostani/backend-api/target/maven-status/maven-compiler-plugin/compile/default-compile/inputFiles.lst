@@ -12,6 +12,7 @@ C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\b
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\Campaign.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\CompainsThisMonthComisions.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\CompainsComisionsStats.java
+C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\Banners.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\Login.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\Response.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\UserCrudService.java
@@ -46,6 +47,7 @@ C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\b
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\controller\FacebookUsersController.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\category\CategoryListResponse.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\EmailServiceImpl.java
+C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\CampaignBanner.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\TokenService.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\request\UserRegisterRequest.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\UserAuthenticationService.java
