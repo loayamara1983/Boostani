@@ -26,7 +26,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.boostani.backend.api.persistance.model.User;
 import com.boostani.backend.api.web.response.affilate.AffilateListResponse;
+import com.boostani.backend.api.web.response.campaign.Banners;
 import com.boostani.backend.api.web.response.campaign.Campaign;
+import com.boostani.backend.api.web.response.campaign.CampaignBanner;
 import com.boostani.backend.api.web.response.campaign.Campaigns;
 import com.boostani.backend.api.web.response.campaign.Login;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,7 +49,7 @@ public class AffilateCampaignsController {
 
 	@Autowired
 	public RestTemplate restTemplate;
-	
+
 	@Autowired
 	private Environment env;
 
@@ -68,14 +70,14 @@ public class AffilateCampaignsController {
 		String username = env.getProperty("com.boostani.admin.username");
 		String password = env.getProperty("com.boostani.admin.password");
 		String url = env.getProperty("com.boostani.base.url");
-		
+
 //		String username = user.getEmail();
 //		String password = user.getPassword();
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String sessionIdFormData = env.getProperty("com.boostani.request.session.id");
-		String formData = String.format(sessionIdFormData, username, password, "M"); //should be 'A'
+		String formData = String.format(sessionIdFormData, username, password, "M"); // should be 'A'
 		map.add("D", formData);
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -83,10 +85,10 @@ public class AffilateCampaignsController {
 		ResponseEntity<Login> response = restTemplate.postForEntity(url, request, Login.class);
 
 		List<List<String>> fields = response.getBody().getFields();
-		if(fields.size() < 8) {
+		if (fields.size() < 8) {
 			return null;
 		}
-		
+
 		return fields.get(7).get(1);
 	}
 
@@ -98,17 +100,18 @@ public class AffilateCampaignsController {
 			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/campaings/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<AffilateListResponse> listCampains(@AuthenticationPrincipal final User currentUser, @RequestParam(defaultValue = "0") int page,
+	public @ResponseBody ResponseEntity<AffilateListResponse> listCampains(
+			@AuthenticationPrincipal final User currentUser, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "100") int size) {
 
 		AffilateListResponse response = new AffilateListResponse();
 
 		String sessionId = getSessionId(currentUser);
-		if(StringUtils.isBlank(sessionId)) {
+		if (StringUtils.isBlank(sessionId)) {
 			response.setMessage("Unauthorized access to Boostani Backend");
 			return new ResponseEntity<AffilateListResponse>(response, HttpStatus.UNAUTHORIZED);
 		}
-		
+
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String listFormRequestData = env.getProperty("com.boostani.request.affiliate.campain.list.form");
@@ -129,13 +132,59 @@ public class AffilateCampaignsController {
 
 		rows.remove(0);
 
-		List<Campaign> campaigns = populate(rows);
+		List<CampaignBanner> banners = getAllBanners(sessionId);
+
+		List<Campaign> campaigns = populate(sessionId, rows, banners);
 		response.setCampaigns(campaigns);
 
 		return new ResponseEntity<AffilateListResponse>(response, HttpStatus.OK);
 	}
 
-	private List<Campaign> populate(List<List<String>> rows) {
+	private List<CampaignBanner> getAllBanners(String sessionId) {
+		String url = env.getProperty("com.boostani.base.url");
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+
+		String listFormRequestData = env.getProperty("com.boostani.request.campain.by.banner.list.form");
+		String formData = String.format(listFormRequestData, 0, 100, sessionId);
+
+		map.add("D", formData);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		ResponseEntity<List> response = restTemplate.postForEntity(url, request, List.class);
+		Object bannersObject = response.getBody().get(0);
+
+		Banners bannersList = mapper.convertValue(bannersObject, Banners.class);
+
+		List<List<String>> rows = bannersList.getRows();
+		if (rows == null || rows.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		rows.remove(0);
+
+		List<CampaignBanner> campaignsBanners = new ArrayList<>();
+
+		for (List<String> row : rows) {
+			CampaignBanner campaignBanner = new CampaignBanner();
+
+			campaignBanner.setId(row.get(0));
+			campaignBanner.setName(row.get(8));
+			campaignBanner.setCampaignId(row.get(3));
+
+			String status = row.get(6) != null && row.get(6).equals("A") ? "Active" : "Inactive";
+			campaignBanner.setStatus(status);
+
+			campaignBanner.setType(row.get(5));
+			campaignBanner.setUrl(row.get(14));
+
+			campaignsBanners.add(campaignBanner);
+		}
+
+		return campaignsBanners;
+	}
+
+	private List<Campaign> populate(String sessionId, List<List<String>> rows, List<CampaignBanner> banners) {
 		if (rows == null || rows.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -150,17 +199,62 @@ public class AffilateCampaignsController {
 			campaign.setStatus(row.get(2));
 			campaign.setName(row.get(3));
 			campaign.setDescription(row.get(4));
-			campaign.setLogoUrl(row.get(5));
+
+			String logoUrl = row.get(5);
+			if (StringUtils.isNotBlank(logoUrl) && !StringUtils.startsWith(logoUrl, "http://")) {
+				logoUrl = "http:" + logoUrl;
+			}
+
+			campaign.setLogoUrl(logoUrl);
+
 			campaign.setCookieLifetime(row.get(6));
-			campaign.setLongDescriptionExists(row.get(7));
-			campaign.setBanners(row.get(8));
-			campaign.setCommissionsExist(row.get(9));
-			campaign.setCommissionsDetails(row.get(10));
+//			campaign.setLongDescriptionExists(row.get(7));
+			banners.stream()
+					.filter(banner -> banner.getCampaignId().equals(campaign.getId()) && banner.getType().equals("I"))
+					.findFirst().ifPresent(imageBanner -> {
+						campaign.setBanner(imageBanner);
+					});
+//			campaign.setCommissionsExist(row.get(9));
+
+			campaign.setCommissionsDetails(getCommissionsByCampainId(sessionId, campaign.getCampaignId()));
 
 			campaigns.add(campaign);
 		}
 
 		return campaigns;
+	}
+
+	private String getCommissionsByCampainId(String sessionId, String campaignId) {
+		String url = env.getProperty("com.boostani.base.url");
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+
+		String listFormRequestData = env.getProperty("com.boostani.request.campain.by.commissions.list.form");
+		String formData = String.format(listFormRequestData, campaignId, campaignId, campaignId, sessionId);
+
+		map.add("D", formData);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		ResponseEntity<List> response = restTemplate.postForEntity(url, request, List.class);
+		List<List<String>> commissionsList = (List<List<String>>) response.getBody().get(2);
+
+		if (commissionsList == null || commissionsList.isEmpty()) {
+			return "0$";
+		}
+
+		commissionsList.remove(0);
+
+		Double totalCommissions = 0.0;
+
+		for (List<String> rows : commissionsList) {
+			String type = rows.get(3);
+			if (type.equals("$")) {
+				String amount = rows.get(4) == null ? "0" : rows.get(4);
+				totalCommissions += Double.parseDouble(amount);
+			}
+		}
+
+		return totalCommissions + "$";
 	}
 
 }

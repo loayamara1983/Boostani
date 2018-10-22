@@ -2,11 +2,16 @@ package com.boostani.backend.api.web.response.campaign;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * 
  * @author Loay
  *
  */
+
+@JsonInclude(value=Include.NON_EMPTY)
 public class Campaign implements Serializable {
 
 	/**
@@ -22,7 +27,7 @@ public class Campaign implements Serializable {
 	private String logoUrl;
 	private String cookieLifetime;
 	private String longDescriptionExists;
-	private String banners;
+	private CampaignBanner banner;
 	private String commissionsExist;
 	private String commissionsDetails;
 
@@ -90,12 +95,14 @@ public class Campaign implements Serializable {
 		this.longDescriptionExists = longDescriptionExists;
 	}
 
-	public String getBanners() {
-		return banners;
+	
+
+	public CampaignBanner getBanner() {
+		return banner;
 	}
 
-	public void setBanners(String banners) {
-		this.banners = banners;
+	public void setBanner(CampaignBanner banner) {
+		this.banner = banner;
 	}
 
 	public String getCommissionsExist() {
@@ -118,7 +125,6 @@ public class Campaign implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((banners == null) ? 0 : banners.hashCode());
 		result = prime * result + ((campaignId == null) ? 0 : campaignId.hashCode());
 		result = prime * result + ((commissionsDetails == null) ? 0 : commissionsDetails.hashCode());
 		result = prime * result + ((commissionsExist == null) ? 0 : commissionsExist.hashCode());
@@ -141,11 +147,6 @@ public class Campaign implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Campaign other = (Campaign) obj;
-		if (banners == null) {
-			if (other.banners != null)
-				return false;
-		} else if (!banners.equals(other.banners))
-			return false;
 		if (campaignId == null) {
 			if (other.campaignId != null)
 				return false;
@@ -203,7 +204,7 @@ public class Campaign implements Serializable {
 	public String toString() {
 		return "Campaign [id=" + id + ", campaignId=" + campaignId + ", status=" + status + ", name=" + name
 				+ ", description=" + description + ", logoUrl=" + logoUrl + ", cookieLifetime=" + cookieLifetime
-				+ ", longDescriptionExists=" + longDescriptionExists + ", banners=" + banners + ", commissionsExist="
+				+ ", longDescriptionExists=" + longDescriptionExists + ", commissionsExist="
 				+ commissionsExist + ", commissionsDetails=" + commissionsDetails + "]";
 	}
 

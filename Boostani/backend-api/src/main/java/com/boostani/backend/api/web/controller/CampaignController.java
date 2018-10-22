@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.boostani.backend.api.web.response.campaign.Banners;
 import com.boostani.backend.api.web.response.campaign.Campaign;
+import com.boostani.backend.api.web.response.campaign.CampaignBanner;
 import com.boostani.backend.api.web.response.campaign.CampaignListResponse;
 import com.boostani.backend.api.web.response.campaign.CampaignResponse;
 import com.boostani.backend.api.web.response.campaign.Campaigns;
@@ -133,13 +135,59 @@ public class CampaignController {
 
 		rows.remove(0);
 
-		List<Campaign> campaigns = populate(rows);
+		List<CampaignBanner> banners = getAllBanners(sessionId);
+
+		List<Campaign> campaigns = populate(sessionId, rows, banners);
 		response.setCampaigns(campaigns);
 
 		return new ResponseEntity<CampaignListResponse>(response, HttpStatus.OK);
 	}
 
-	private List<Campaign> populate(List<List<String>> rows) {
+	private List<CampaignBanner> getAllBanners(String sessionId) {
+		String url = env.getProperty("com.boostani.base.url");
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+
+		String listFormRequestData = env.getProperty("com.boostani.request.campain.by.banner.list.form");
+		String formData = String.format(listFormRequestData, 0, 100, sessionId);
+
+		map.add("D", formData);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		ResponseEntity<List> response = restTemplate.postForEntity(url, request, List.class);
+		Object bannersObject = response.getBody().get(0);
+
+		Banners bannersList = mapper.convertValue(bannersObject, Banners.class);
+
+		List<List<String>> rows = bannersList.getRows();
+		if (rows == null || rows.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		rows.remove(0);
+
+		List<CampaignBanner> campaignsBanners = new ArrayList<>();
+
+		for (List<String> row : rows) {
+			CampaignBanner campaignBanner = new CampaignBanner();
+
+			campaignBanner.setId(row.get(0));
+			campaignBanner.setName(row.get(8));
+			campaignBanner.setCampaignId(row.get(3));
+
+			String status = row.get(6) != null && row.get(6).equals("A") ? "Active" : "Inactive";
+			campaignBanner.setStatus(status);
+
+			campaignBanner.setType(row.get(5));
+			campaignBanner.setUrl(row.get(14));
+
+			campaignsBanners.add(campaignBanner);
+		}
+
+		return campaignsBanners;
+	}
+
+	private List<Campaign> populate(String sessionId, List<List<String>> rows, List<CampaignBanner> banners) {
 		if (rows == null || rows.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -151,26 +199,69 @@ public class CampaignController {
 
 			campaign.setId(row.get(0));
 			campaign.setCampaignId(row.get(1));
-			campaign.setStatus(row.get(2));
+			String status = row.get(2) != null && row.get(2).equals("A") ? "Active" : "Inactive";
+			campaign.setStatus(status);
+
 			campaign.setName(row.get(3));
 			campaign.setDescription(row.get(4));
-			
+
 			String logoUrl = row.get(5);
-			if(StringUtils.isNotBlank(logoUrl) && !StringUtils.startsWith(logoUrl, "http://")) {
-				logoUrl = "http:"+logoUrl;
+			if (StringUtils.isNotBlank(logoUrl) && !StringUtils.startsWith(logoUrl, "http://")) {
+				logoUrl = "http:" + logoUrl;
 			}
-			
+
 			campaign.setLogoUrl(logoUrl);
 			campaign.setCookieLifetime(row.get(6));
-			campaign.setLongDescriptionExists(row.get(7));
-			campaign.setBanners(row.get(8));
-			campaign.setCommissionsExist(row.get(9));
-			campaign.setCommissionsDetails(row.get(10));
+//			campaign.setLongDescriptionExists(row.get(7));
+
+			banners.stream()
+					.filter(banner -> banner.getCampaignId().equals(campaign.getId()) && banner.getType().equals("I"))
+					.findFirst().ifPresent(imageBanner -> {
+						campaign.setBanner(imageBanner);
+					});
+
+//			campaign.setCommissionsExist(row.get(9));
+
+			String commissions = getCommissionsByCampainId(sessionId, campaign.getCampaignId());
+			campaign.setCommissionsDetails(commissions);
 
 			campaigns.add(campaign);
 		}
 
 		return campaigns;
+	}
+
+	private String getCommissionsByCampainId(String sessionId, String campaignId) {
+		String url = env.getProperty("com.boostani.base.url");
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+
+		String listFormRequestData = env.getProperty("com.boostani.request.campain.by.commissions.list.form");
+		String formData = String.format(listFormRequestData, campaignId, campaignId, campaignId, sessionId);
+
+		map.add("D", formData);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		ResponseEntity<List> response = restTemplate.postForEntity(url, request, List.class);
+		List<List<String>> commissionsList = (List<List<String>>) response.getBody().get(2);
+
+		if (commissionsList == null || commissionsList.isEmpty()) {
+			return "0$";
+		}
+
+		commissionsList.remove(0);
+
+		Double totalCommissions = 0.0;
+
+		for (List<String> rows : commissionsList) {
+			String type = rows.get(3);
+			if (type.equals("$")) {
+				String amount = rows.get(4) == null ? "0" : rows.get(4);
+				totalCommissions += Double.parseDouble(amount);
+			}
+		}
+
+		return totalCommissions + "$";
 	}
 
 	@ApiOperation(value = "Displays the campain details by a given ID stored on Boostani Merchants server.", response = CampaignResponse.class)
@@ -187,7 +278,9 @@ public class CampaignController {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String idFormRequestData = env.getProperty("com.boostani.request.campain.id.form");
-		String formData = String.format(idFormRequestData, id, getSessionId());
+		String sessionId = getSessionId();
+
+		String formData = String.format(idFormRequestData, id, id, sessionId);
 
 		map.add("D", formData);
 
@@ -196,6 +289,8 @@ public class CampaignController {
 		ResponseEntity<List> campaignsResponse = restTemplate.postForEntity(url, request, List.class);
 		Map campaignsObject = (Map) campaignsResponse.getBody().get(0);
 		List<List> fields = (List<List>) campaignsObject.get("fields");
+
+		List<CampaignBanner> banners = getAllBanners(sessionId);
 
 		fields.remove(0);
 
@@ -206,11 +301,22 @@ public class CampaignController {
 		campaign.setStatus(fields.get(3).get(1).toString());
 		campaign.setName(fields.get(4).get(1).toString());
 		campaign.setDescription(fields.get(5).get(1).toString());
-		campaign.setLogoUrl(fields.get(11).get(1).toString());
+
+		String logoUrl = fields.get(11).get(1).toString();
+		if (StringUtils.isNotBlank(logoUrl) && !StringUtils.startsWith(logoUrl, "http://")) {
+			logoUrl = "http:" + logoUrl;
+		}
+
+		campaign.setLogoUrl(logoUrl);
 		campaign.setCookieLifetime(fields.get(20).get(1).toString());
-		campaign.setLongDescriptionExists(fields.get(6).get(1).toString());
-		campaign.setBanners(fields.get(25).get(1).toString());
-		campaign.setCommissionsExist(fields.get(27).get(1).toString());
+//		campaign.setLongDescriptionExists(fields.get(6).get(1).toString());
+		banners.stream()
+				.filter(banner -> banner.getCampaignId().equals(campaign.getId()) && banner.getType().equals("I"))
+				.findFirst().ifPresent(imageBanner -> {
+					campaign.setBanner(imageBanner);
+				});
+//		campaign.setCommissionsExist(fields.get(27).get(1).toString());
+		campaign.setCommissionsDetails(getCommissionsByCampainId(sessionId, campaign.getCampaignId()));
 
 		CampaignResponse response = new CampaignResponse();
 		response.setCampaign(campaign);
@@ -263,7 +369,9 @@ public class CampaignController {
 
 		rows.remove(0);
 
-		List<Campaign> campaigns = populate(rows);
+		List<CampaignBanner> banners = getAllBanners(sessionId);
+
+		List<Campaign> campaigns = populate(sessionId, rows, banners);
 		response.setCampaigns(campaigns);
 
 		return new ResponseEntity<CampaignListResponse>(response, HttpStatus.OK);
