@@ -212,15 +212,12 @@ public class CampaignController {
 
 			campaign.setLogoUrl(logoUrl);
 			campaign.setCookieLifetime(row.get(6));
-//			campaign.setLongDescriptionExists(row.get(7));
 
 			banners.stream()
 					.filter(banner -> banner.getCampaignId().equals(campaign.getId()) && banner.getType().equals("I"))
 					.findFirst().ifPresent(imageBanner -> {
 						campaign.setBanner(imageBanner);
 					});
-
-//			campaign.setCommissionsExist(row.get(9));
 
 			String commissions = getCommissionsByCampainId(sessionId, campaign.getCampaignId());
 			campaign.setCommissionsDetails(commissions);

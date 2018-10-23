@@ -18,9 +18,9 @@ final class UsersService implements UserCrudService {
 
 	@Override
 	public User save(final User user) {
-		Optional<User> SavedUser = findByUsername(user.getUsername());
-		if (SavedUser.isPresent())
-			return SavedUser.get();
+		Optional<User> savedUser = findByUsername(user.getUsername());
+		if (savedUser.isPresent())
+			return savedUser.get();
 
 		return userRepository.save(user);
 	}
