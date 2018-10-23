@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.boostani.backend.api.persistance.dao.CategoryRepository;
 import com.boostani.backend.api.persistance.model.Category;
+import com.boostani.backend.api.service.category.CategoryService;
 import com.boostani.backend.api.web.request.CategoryRequest;
 import com.boostani.backend.api.web.response.category.CategoryListResponse;
 import com.boostani.backend.api.web.response.category.CategoryResponse;
@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
 public class CategoryController {
 
 	@Autowired
-	private CategoryRepository categoryRepository;
+	private CategoryService categoryService;
 	
 	@ApiOperation(value = "Lists all campain categories stored on Local database.", response = CategoryListResponse.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully listed categories"),
@@ -42,7 +42,7 @@ public class CategoryController {
 	public @ResponseBody ResponseEntity<CategoryListResponse> list() {
 		CategoryListResponse response = new CategoryListResponse();
 
-		List<Category> categories = categoryRepository.findAll();
+		List<Category> categories = categoryService.findAll();
 		response.setCategories(categories);
 
 		return new ResponseEntity<CategoryListResponse>(response, HttpStatus.OK);
@@ -60,15 +60,9 @@ public class CategoryController {
 			return null;
 		}
 
-		Category category = new Category();
-
-		category.setName(categoryRequest.getName());
-		category.setDescription(categoryRequest.getDescription());
-		category.setExternalId(categoryRequest.getExternalId());
-		
-		categoryRepository.save(category);
-		
 		CategoryResponse response = new CategoryResponse();
+
+		Category category = categoryService.save(categoryRequest);
 		response.setCategory(category);
 		
 		return new ResponseEntity<CategoryResponse>(response, HttpStatus.OK);

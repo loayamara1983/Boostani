@@ -1,4 +1,4 @@
-package com.boostani.backend.api.service;
+package com.boostani.backend.api.service.email;
 
 import org.springframework.mail.SimpleMailMessage;
 

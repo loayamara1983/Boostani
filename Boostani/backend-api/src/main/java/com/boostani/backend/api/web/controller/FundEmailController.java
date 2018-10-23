@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.boostani.backend.api.service.EmailService;
+import com.boostani.backend.api.service.email.EmailService;
 import com.boostani.backend.api.web.request.FundEmailRequest;
 import com.boostani.backend.api.web.response.fund.FundResponse;
 

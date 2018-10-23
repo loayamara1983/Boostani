@@ -1,4 +1,4 @@
-package com.boostani.backend.api.service;
+package com.boostani.backend.api.service.country;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.boostani.backend.api.persistance.model.Country;
@@ -19,12 +21,14 @@ import com.boostani.backend.api.persistance.model.Country;
  */
 
 @Service
+@CacheConfig(cacheNames="countries")
 public class CountryService {
 
 	/**
 	 * 
 	 * @return
 	 */
+	@Cacheable
 	public List<Country> findAll() {
 		// Get all available locales
 		List<Locale> availableLocales = Arrays.asList(Locale.getAvailableLocales());

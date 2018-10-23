@@ -5,10 +5,12 @@ import static java.util.Optional.ofNullable;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.boostani.backend.api.persistance.dao.UserRepository;
-import com.boostani.backend.api.service.UserCrudService;
+import com.boostani.backend.api.service.user.UserAlreadyFoundException;
+import com.boostani.backend.api.service.user.UserCrudService;
 
 @Service
 final class UsersService implements UserCrudService {
@@ -17,12 +19,18 @@ final class UsersService implements UserCrudService {
 	private UserRepository userRepository;
 
 	@Override
-	public User save(final User user) {
-		Optional<User> savedUser = findByUsername(user.getUsername());
-		if (savedUser.isPresent())
-			return savedUser.get();
+	public User save(final User user) throws UserAlreadyFoundException {
 
-		return userRepository.save(user);
+		try {
+			User newUser = userRepository.save(user);
+			return newUser;
+		} catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			throw new UserAlreadyFoundException(e.getMessage());
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	@Override

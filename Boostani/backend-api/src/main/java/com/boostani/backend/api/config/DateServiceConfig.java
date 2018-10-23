@@ -1,8 +1,11 @@
-package com.boostani.backend.api.service;
+package com.boostani.backend.api.config;
 
 import org.joda.time.DateTimeZone;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.boostani.backend.api.service.date.DateService;
+import com.boostani.backend.api.service.date.JodaDateService;
 
 @Configuration
 public class DateServiceConfig {

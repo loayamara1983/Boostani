@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boostani.backend.api.service.EmailService;
-import com.boostani.backend.api.service.UserAuthenticationService;
-import com.boostani.backend.api.service.UserCrudService;
+import com.boostani.backend.api.service.email.EmailService;
+import com.boostani.backend.api.service.user.UserAlreadyFoundException;
+import com.boostani.backend.api.service.user.UserAuthenticationService;
+import com.boostani.backend.api.service.user.UserCrudService;
 import com.boostani.backend.api.web.response.user.UserResponse;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.Parameter;
@@ -70,20 +71,19 @@ final class FacebookUsersController {
 			return new ResponseEntity<>(userResponse, HttpStatus.UNAUTHORIZED);
 		}
 
-		UserResponse userResponse = register(facebookUser);
-
-		if (userResponse == null) {
-			userResponse = new UserResponse();
-			userResponse.setMessage("Invalid user access token, we couldn't find the facebook details");
-			return new ResponseEntity<>(userResponse, HttpStatus.UNAUTHORIZED);
-		}
-
-		if (StringUtils.isBlank(userResponse.getAccessToken())) {
-			userResponse.setMessage("invalid login and/or password");
-			return new ResponseEntity<>(userResponse, HttpStatus.UNAUTHORIZED);
-		}
-
 		try {
+			UserResponse userResponse = register(facebookUser);
+			if (userResponse == null) {
+				userResponse = new UserResponse();
+				userResponse.setMessage("Invalid user access token, we couldn't find the facebook details");
+				return new ResponseEntity<>(userResponse, HttpStatus.UNAUTHORIZED);
+			}
+
+			if (StringUtils.isBlank(userResponse.getAccessToken())) {
+				userResponse.setMessage("invalid login and/or password");
+				return new ResponseEntity<>(userResponse, HttpStatus.UNAUTHORIZED);
+			}
+
 			sendCreatedUserEmail(facebookUser);
 
 			return new ResponseEntity<>(userResponse, HttpStatus.OK);
@@ -124,7 +124,7 @@ final class FacebookUsersController {
 			response.setPhoneNumber(user.getPhoneNumber());
 			response.setCountry(user.getCountry());
 			response.setAvatar(user.getAvatar());
-			
+
 			response.setMessage("User logged in");
 			response.setExpiry(expiry());
 
@@ -136,12 +136,12 @@ final class FacebookUsersController {
 		}
 	}
 
-	private UserResponse register(User facebookUser) {
+	private UserResponse register(User facebookUser) throws UserAlreadyFoundException {
 		com.boostani.backend.api.persistance.model.User user = com.boostani.backend.api.persistance.model.User.builder()
 				.username(facebookUser.getName()).password(facebookUser.getId()).email(facebookUser.getEmail())
 				.firstName(facebookUser.getFirstName()).lastName(facebookUser.getLastName())
 				.birthDate(facebookUser.getBirthdayAsDate()).providerId("facebook")
-				.avatar(facebookUser.getPicture()==null?null:facebookUser.getPicture().getUrl()).build();
+				.avatar(facebookUser.getPicture() == null ? null : facebookUser.getPicture().getUrl()).build();
 
 		users.save(user);
 

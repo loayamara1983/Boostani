@@ -178,7 +178,12 @@ public class User implements UserDetails {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + ": " + getUsername();
+		return "User [id=" + id + ", providerId=" + providerId + ", providerUserId=" + providerUserId + ", accessToken="
+				+ accessToken + ", username=" + username + ", password=" + password + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", email=" + email + ", birthDate=" + birthDate + ", phoneNumber="
+				+ phoneNumber + ", country=" + country + ", expires=" + expires + ", accountExpired=" + accountExpired
+				+ ", accountLocked=" + accountLocked + ", credentialsExpired=" + credentialsExpired
+				+ ", accountEnabled=" + accountEnabled + ", avatar=" + avatar + ", authorities=" + authorities + "]";
 	}
 
 	public String getProviderId() {
@@ -269,6 +274,124 @@ public class User implements UserDetails {
 		this.accountEnabled = accountEnabled;
 		this.avatar = avatar;
 		this.authorities = authorities;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((accessToken == null) ? 0 : accessToken.hashCode());
+		result = prime * result + (accountEnabled ? 1231 : 1237);
+		result = prime * result + (accountExpired ? 1231 : 1237);
+		result = prime * result + (accountLocked ? 1231 : 1237);
+		result = prime * result + ((authorities == null) ? 0 : authorities.hashCode());
+		result = prime * result + ((avatar == null) ? 0 : avatar.hashCode());
+		result = prime * result + ((birthDate == null) ? 0 : birthDate.hashCode());
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + (credentialsExpired ? 1231 : 1237);
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + (int) (expires ^ (expires >>> 32));
+		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());
+		result = prime * result + ((providerId == null) ? 0 : providerId.hashCode());
+		result = prime * result + ((providerUserId == null) ? 0 : providerUserId.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (accessToken == null) {
+			if (other.accessToken != null)
+				return false;
+		} else if (!accessToken.equals(other.accessToken))
+			return false;
+		if (accountEnabled != other.accountEnabled)
+			return false;
+		if (accountExpired != other.accountExpired)
+			return false;
+		if (accountLocked != other.accountLocked)
+			return false;
+		if (authorities == null) {
+			if (other.authorities != null)
+				return false;
+		} else if (!authorities.equals(other.authorities))
+			return false;
+		if (avatar == null) {
+			if (other.avatar != null)
+				return false;
+		} else if (!avatar.equals(other.avatar))
+			return false;
+		if (birthDate == null) {
+			if (other.birthDate != null)
+				return false;
+		} else if (!birthDate.equals(other.birthDate))
+			return false;
+		if (country == null) {
+			if (other.country != null)
+				return false;
+		} else if (!country.equals(other.country))
+			return false;
+		if (credentialsExpired != other.credentialsExpired)
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (expires != other.expires)
+			return false;
+		if (firstName == null) {
+			if (other.firstName != null)
+				return false;
+		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (lastName == null) {
+			if (other.lastName != null)
+				return false;
+		} else if (!lastName.equals(other.lastName))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (phoneNumber == null) {
+			if (other.phoneNumber != null)
+				return false;
+		} else if (!phoneNumber.equals(other.phoneNumber))
+			return false;
+		if (providerId == null) {
+			if (other.providerId != null)
+				return false;
+		} else if (!providerId.equals(other.providerId))
+			return false;
+		if (providerUserId == null) {
+			if (other.providerUserId != null)
+				return false;
+		} else if (!providerUserId.equals(other.providerUserId))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		return true;
 	}
 	
 

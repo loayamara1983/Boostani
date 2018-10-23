@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.boostani.backend.api.service.UserAuthenticationService;
+import com.boostani.backend.api.service.user.UserAuthenticationService;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

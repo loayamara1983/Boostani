@@ -1,4 +1,4 @@
-package com.boostani.backend.api.service;
+package com.boostani.backend.api.service.user;
 
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ import com.boostani.backend.api.persistance.model.User;
  */
 public interface UserCrudService {
 
-  User save(User user);
+  User save(User user) throws UserAlreadyFoundException;
 
   Optional<User> find(String id);
 

@@ -1,4 +1,4 @@
-package com.boostani.backend.api.service;
+package com.boostani.backend.api.service.date;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -7,7 +7,7 @@ import java.util.TimeZone;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-final class JodaDateService implements DateService {
+public class JodaDateService implements DateService {
 
   private final DateTimeZone timeZone;
 
@@ -16,7 +16,7 @@ final class JodaDateService implements DateService {
    * dates over all servers, independently from the region
    * the server is running.
    */
-  JodaDateService(final DateTimeZone timeZone) {
+  public JodaDateService(final DateTimeZone timeZone) {
     super();
     this.timeZone = checkNotNull(timeZone);
 

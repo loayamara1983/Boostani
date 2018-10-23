@@ -1,4 +1,4 @@
-package com.boostani.backend.api.service;
+package com.boostani.backend.api.service.date;
 
 import org.joda.time.DateTime;
 

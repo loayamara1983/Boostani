@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.boostani.backend.api.service.CountryService;
+import com.boostani.backend.api.service.country.CountryService;
 import com.boostani.backend.api.web.response.country.CountryResponse;
 
 import io.swagger.annotations.ApiOperation;

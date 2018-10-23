@@ -1,15 +1,20 @@
 package com.boostani.backend.api.web.response.campaign;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class CampaignBanner {
 
+	@JsonIgnore
 	private String id;
 	
 	private String name;
 	
+	@JsonIgnore
 	private String campaignId;
 	
 	private String url;
 	
+	@JsonIgnore
 	private String type;
 	
 	private String status;

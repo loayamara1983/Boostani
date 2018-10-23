@@ -1,4 +1,4 @@
-package com.boostani.backend.api.service;
+package com.boostani.backend.api.service.user;
 
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 import static io.jsonwebtoken.impl.TextCodec.BASE64;
@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.boostani.backend.api.service.date.DateService;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 
