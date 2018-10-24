@@ -2,6 +2,7 @@ com\boostani\backend\api\config\security\rest\SecurityConfig.class
 com\boostani\backend\api\persistance\model\User$UserBuilder.class
 com\boostani\backend\api\web\request\UserRegisterRequest.class
 com\boostani\backend\api\service\storage\exception\FileStorageException.class
+com\boostani\backend\api\web\response\user\Account.class
 META-INF\spring-configuration-metadata.json
 com\boostani\backend\api\persistance\model\UserAuthority.class
 com\boostani\backend\api\web\controller\FacebookUsersController.class
