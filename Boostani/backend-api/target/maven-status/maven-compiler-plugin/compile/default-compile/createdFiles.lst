@@ -9,11 +9,13 @@ com\boostani\backend\api\web\controller\FacebookUsersController.class
 com\boostani\backend\api\web\response\campaign\CampaignBanner.class
 com\boostani\backend\api\service\user\UserAuthenticationService.class
 com\boostani\backend\api\web\controller\CampaignController.class
+com\boostani\backend\api\web\response\cache\CacheResponse.class
 com\boostani\backend\api\web\response\campaign\Campaigns.class
 com\boostani\backend\api\persistance\model\Category.class
 com\boostani\backend\api\web\controller\CountryController.class
 com\boostani\backend\api\config\CachingConfig.class
 com\boostani\backend\api\config\security\rest\TokenAuthenticationFilter.class
+com\boostani\backend\api\web\controller\CacheController.class
 com\boostani\backend\api\web\response\campaign\CompainsStats.class
 com\boostani\backend\api\service\email\EmailServiceImpl.class
 com\boostani\backend\api\service\user\TokenAuthenticationService.class
