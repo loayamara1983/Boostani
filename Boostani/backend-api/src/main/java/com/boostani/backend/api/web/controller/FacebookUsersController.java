@@ -89,15 +89,21 @@ final class FacebookUsersController {
 
 			return new ResponseEntity<>(userResponse, HttpStatus.OK);
 
+		} catch (UserAlreadyFoundException e) {
+			e.printStackTrace();
+			UserResponse response = new UserResponse();
+			response.setMessage("User is already registered!!");
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<>(new UserResponse(), HttpStatus.INTERNAL_SERVER_ERROR);
+			UserResponse response = new UserResponse();
+			response.setMessage(e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
 
-	UserResponse login(@RequestParam("username") final String username,
-			@RequestParam("password") final String password) {
+	UserResponse login(final String username, final String password) {
 		Optional<String> accessToken = authentication.login(username, password);
 
 		if (!accessToken.isPresent()) {
@@ -147,9 +153,17 @@ final class FacebookUsersController {
 				.birthDate(facebookUser.getBirthdayAsDate()).providerId("facebook")
 				.avatar(facebookUser.getPicture() == null ? null : facebookUser.getPicture().getUrl()).build();
 
-		users.save(user);
+		try {
+			users.save(user);
+			return login(facebookUser.getName(), facebookUser.getId());
 
-		return login(facebookUser.getName(), facebookUser.getId());
+		} catch (UserAlreadyFoundException e) {
+			return login(facebookUser.getName(), facebookUser.getId());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private void sendCreatedUserEmail(User facebookUser) throws Exception {

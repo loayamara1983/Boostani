@@ -136,7 +136,10 @@ final class PublicUsersController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<>(new UserResponse(), HttpStatus.INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+			response = new UserResponse();
+			response.setMessage(e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
