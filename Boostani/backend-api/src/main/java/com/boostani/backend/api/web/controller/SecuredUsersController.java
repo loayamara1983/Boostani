@@ -62,7 +62,7 @@ final class SecuredUsersController {
         String fileName = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
+                .path("/users/downloadFile/")
                 .path(fileName)
                 .toUriString();
         
