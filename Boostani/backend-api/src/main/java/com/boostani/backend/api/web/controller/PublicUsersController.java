@@ -27,6 +27,7 @@ import com.boostani.backend.api.service.user.UserAlreadyFoundException;
 import com.boostani.backend.api.service.user.UserAuthenticationService;
 import com.boostani.backend.api.service.user.UserCrudService;
 import com.boostani.backend.api.web.request.UserRegisterRequest;
+import com.boostani.backend.api.web.response.user.Account;
 import com.boostani.backend.api.web.response.user.UserResponse;
 
 import io.swagger.annotations.ApiOperation;
@@ -114,19 +115,22 @@ final class PublicUsersController {
 
 			User user = currentUser.get();
 
-			response.setAccessToken(accessToken.get());
+			Account account = new Account();
 
-			response.setUsername(user.getUsername());
-			response.setFirstName(user.getFirstName());
-			response.setLastName(user.getLastName());
-			response.setEmail(user.getEmail());
-			response.setBirthDate(user.getBirthDate());
-			response.setPhoneNumber(user.getPhoneNumber());
-			response.setCountry(user.getCountry());
-			response.setAvatar(user.getAvatar());
+			account.setAccessToken(accessToken.get());
+			account.setExpiry(expiry());
 
+			account.setUsername(user.getUsername());
+			account.setFirstName(user.getFirstName());
+			account.setLastName(user.getLastName());
+			account.setEmail(user.getEmail());
+			account.setBirthDate(user.getBirthDate());
+			account.setPhoneNumber(user.getPhoneNumber());
+			account.setCountry(user.getCountry());
+			account.setAvatar(user.getAvatar());
+
+			response.setAccount(account);
 			response.setMessage("User logged in");
-			response.setExpiry(expiry());
 
 			return new ResponseEntity<>(response, HttpStatus.OK);
 

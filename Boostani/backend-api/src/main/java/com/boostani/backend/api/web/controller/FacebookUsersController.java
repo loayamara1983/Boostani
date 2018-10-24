@@ -21,6 +21,7 @@ import com.boostani.backend.api.service.email.EmailService;
 import com.boostani.backend.api.service.user.UserAlreadyFoundException;
 import com.boostani.backend.api.service.user.UserAuthenticationService;
 import com.boostani.backend.api.service.user.UserCrudService;
+import com.boostani.backend.api.web.response.user.Account;
 import com.boostani.backend.api.web.response.user.UserResponse;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.Parameter;
@@ -73,13 +74,13 @@ final class FacebookUsersController {
 
 		try {
 			UserResponse userResponse = register(facebookUser);
-			if (userResponse == null) {
+			if (userResponse == null || userResponse.getAccount() == null) {
 				userResponse = new UserResponse();
 				userResponse.setMessage("Invalid user access token, we couldn't find the facebook details");
 				return new ResponseEntity<>(userResponse, HttpStatus.UNAUTHORIZED);
 			}
 
-			if (StringUtils.isBlank(userResponse.getAccessToken())) {
+			if (StringUtils.isBlank(userResponse.getAccount().getAccessToken())) {
 				userResponse.setMessage("invalid login and/or password");
 				return new ResponseEntity<>(userResponse, HttpStatus.UNAUTHORIZED);
 			}
@@ -114,19 +115,22 @@ final class FacebookUsersController {
 
 			com.boostani.backend.api.persistance.model.User user = currentUser.get();
 
-			response.setAccessToken(accessToken.get());
+			Account account = new Account();
 
-			response.setUsername(user.getUsername());
-			response.setFirstName(user.getFirstName());
-			response.setLastName(user.getLastName());
-			response.setEmail(user.getEmail());
-			response.setBirthDate(user.getBirthDate());
-			response.setPhoneNumber(user.getPhoneNumber());
-			response.setCountry(user.getCountry());
-			response.setAvatar(user.getAvatar());
+			account.setAccessToken(accessToken.get());
+			account.setExpiry(expiry());
 
+			account.setUsername(user.getUsername());
+			account.setFirstName(user.getFirstName());
+			account.setLastName(user.getLastName());
+			account.setEmail(user.getEmail());
+			account.setBirthDate(user.getBirthDate());
+			account.setPhoneNumber(user.getPhoneNumber());
+			account.setCountry(user.getCountry());
+			account.setAvatar(user.getAvatar());
+
+			response.setAccount(account);
 			response.setMessage("User logged in");
-			response.setExpiry(expiry());
 
 			return response;
 
