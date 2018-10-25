@@ -393,6 +393,10 @@ public class User implements UserDetails {
 			return false;
 		return true;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 
 	

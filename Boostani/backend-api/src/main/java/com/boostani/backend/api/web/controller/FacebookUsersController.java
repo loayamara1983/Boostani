@@ -85,8 +85,6 @@ final class FacebookUsersController {
 				return new ResponseEntity<>(userResponse, HttpStatus.UNAUTHORIZED);
 			}
 
-			sendCreatedUserEmail(facebookUser);
-
 			return new ResponseEntity<>(userResponse, HttpStatus.OK);
 
 		} catch (UserAlreadyFoundException e) {
@@ -147,17 +145,27 @@ final class FacebookUsersController {
 	}
 
 	private UserResponse register(User facebookUser) throws UserAlreadyFoundException {
-		com.boostani.backend.api.persistance.model.User user = com.boostani.backend.api.persistance.model.User.builder()
-				.username(facebookUser.getName()).password(facebookUser.getId()).email(facebookUser.getEmail())
-				.firstName(facebookUser.getFirstName()).lastName(facebookUser.getLastName())
-				.birthDate(facebookUser.getBirthdayAsDate()).providerId("facebook")
-				.avatar(facebookUser.getPicture() == null ? null : facebookUser.getPicture().getUrl()).build();
 
 		try {
-			users.save(user);
-			return login(facebookUser.getName(), facebookUser.getId());
+			com.boostani.backend.api.persistance.model.User user = null;
 
-		} catch (UserAlreadyFoundException e) {
+			user = com.boostani.backend.api.persistance.model.User.builder().username(facebookUser.getName())
+					.password(facebookUser.getId()).email(facebookUser.getEmail())
+					.firstName(facebookUser.getFirstName()).lastName(facebookUser.getLastName())
+					.birthDate(facebookUser.getBirthdayAsDate()).providerId("facebook")
+					.avatar(facebookUser.getPicture() == null ? null : facebookUser.getPicture().getUrl()).build();
+
+			Optional<com.boostani.backend.api.persistance.model.User> existsUser = users
+					.findByUsername(facebookUser.getName());
+			if (existsUser.isPresent()) {
+				user = existsUser.get();
+				user.setId(existsUser.get().getId());
+			} else {
+
+				sendCreatedUserEmail(facebookUser);
+			}
+
+			users.save(user);
 			return login(facebookUser.getName(), facebookUser.getId());
 
 		} catch (Exception e) {
