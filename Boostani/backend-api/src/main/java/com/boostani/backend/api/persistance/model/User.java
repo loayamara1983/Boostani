@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -74,6 +75,12 @@ public class User implements UserDetails {
 	private String phoneNumber;
 
 	private String country;
+	
+	private String avatar;
+	
+	@JsonIgnore
+	@Lob
+	private byte[] profileImage;
 
 	@JsonIgnore
 	@Transient
@@ -91,8 +98,6 @@ public class User implements UserDetails {
 	@NotNull
 	private boolean accountEnabled;
 	
-	private String avatar;
-
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
 	private Set<UserAuthority> authorities;
 	
@@ -237,43 +242,9 @@ public class User implements UserDetails {
 	public void setExpires(long expires) {
 		this.expires = expires;
 	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-
+	
 	public User() {
 		super();
-	}
-
-	public User(Long id, String providerId, String providerUserId, String accessToken, String username, String password,
-			String firstName, String lastName, String email, Date birthDate, String phoneNumber, String country,
-			long expires, boolean accountExpired, boolean accountLocked, boolean credentialsExpired,
-			boolean accountEnabled, String avatar, Set<UserAuthority> authorities) {
-		super();
-		this.id = id;
-		this.providerId = providerId;
-		this.providerUserId = providerUserId;
-		this.accessToken = accessToken;
-		this.username = username;
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.birthDate = birthDate;
-		this.phoneNumber = phoneNumber;
-		this.country = country;
-		this.expires = expires;
-		this.accountExpired = accountExpired;
-		this.accountLocked = accountLocked;
-		this.credentialsExpired = credentialsExpired;
-		this.accountEnabled = accountEnabled;
-		this.avatar = avatar;
-		this.authorities = authorities;
 	}
 
 	@Override
@@ -397,7 +368,49 @@ public class User implements UserDetails {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
+	public byte[] getProfileImage() {
+		return profileImage;
+	}
+
+	public void setProfileImage(byte[] profileImage) {
+		this.profileImage = profileImage;
+	}
+
+	public User(Long id, String providerId, String providerUserId, String accessToken, String username, String password,
+			String firstName, String lastName, String email, Date birthDate, String phoneNumber, String country,
+			String avatar, byte[] profileImage, long expires, boolean accountExpired, boolean accountLocked,
+			boolean credentialsExpired, boolean accountEnabled, Set<UserAuthority> authorities) {
+		super();
+		this.id = id;
+		this.providerId = providerId;
+		this.providerUserId = providerUserId;
+		this.accessToken = accessToken;
+		this.username = username;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.birthDate = birthDate;
+		this.phoneNumber = phoneNumber;
+		this.country = country;
+		this.avatar = avatar;
+		this.profileImage = profileImage;
+		this.expires = expires;
+		this.accountExpired = accountExpired;
+		this.accountLocked = accountLocked;
+		this.credentialsExpired = credentialsExpired;
+		this.accountEnabled = accountEnabled;
+		this.authorities = authorities;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 
 	
 }

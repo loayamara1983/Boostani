@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boostani.backend.api.persistance.model.User;
 import com.boostani.backend.api.service.email.EmailService;
 import com.boostani.backend.api.web.request.FundEmailRequest;
 import com.boostani.backend.api.web.response.fund.FundResponse;
@@ -42,14 +44,15 @@ public class FundEmailController {
 			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
 			@ApiResponse(code = 500, message = "Internal Server error on backend server") })
 	@RequestMapping(value = "/transfer", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<FundResponse> doFund(@Valid @RequestBody FundEmailRequest request) {
+	public @ResponseBody ResponseEntity<FundResponse> doFund(@AuthenticationPrincipal final User user, @Valid @RequestBody FundEmailRequest request) {
+		
 		String to = env.getProperty("com.boostani.fund.email.to");
 		String text = env.getProperty("com.boostani.fund.email.text");
-
+		
 		FundResponse response = new FundResponse();
 
 		try {
-			this.emailService.sendSimpleMessage(to, "Fund Transfer", String.format(text, request.getAmount()));
+			this.emailService.sendSimpleMessage(to, "Fund Transfer", String.format(text, user.getUsername(), user.getEmail(), request.getAmount()));
 			response.setMessage("Email sent");
 
 			return new ResponseEntity<FundResponse>(response, HttpStatus.OK);

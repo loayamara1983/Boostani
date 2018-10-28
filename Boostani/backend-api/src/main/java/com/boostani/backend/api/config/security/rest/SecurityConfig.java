@@ -45,9 +45,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 			new AntPathRequestMatcher("/webjars/**"),
 			new AntPathRequestMatcher("/campaign/**"),
 			new AntPathRequestMatcher("/country/**"),
-			new AntPathRequestMatcher("/fund/**"),
 			new AntPathRequestMatcher("/category/**"),
-			new AntPathRequestMatcher("/users/downloadFile/**"),
 			new AntPathRequestMatcher("/cache/**")
 			);
 	private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);

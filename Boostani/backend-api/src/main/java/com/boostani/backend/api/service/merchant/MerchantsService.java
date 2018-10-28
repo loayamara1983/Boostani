@@ -115,7 +115,13 @@ public class MerchantsService {
 			campaignBanner.setStatus(status);
 
 			campaignBanner.setType(row.get(5));
-			campaignBanner.setUrl(row.get(14));
+			
+			String bannerUrl = row.get(14);
+			if (StringUtils.isNotBlank(bannerUrl) && !StringUtils.startsWith(bannerUrl, "http://")) {
+				bannerUrl = "http:" + bannerUrl;
+			}
+			
+			campaignBanner.setUrl(bannerUrl);
 
 			campaignsBanners.add(campaignBanner);
 		}

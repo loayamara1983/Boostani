@@ -3,16 +3,12 @@ package com.boostani.backend.api.web.controller;
 import static lombok.AccessLevel.PACKAGE;
 import static lombok.AccessLevel.PRIVATE;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,63 +36,47 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 @AllArgsConstructor(access = PACKAGE)
 final class SecuredUsersController {
-	
-    private static final Logger logger = LoggerFactory.getLogger(SecuredUsersController.class);
 
 	@NonNull
 	UserAuthenticationService authentication;
-	
+
 	@NonNull
 	UserCrudService users;
-	
+
 	@Autowired
-    private FileStorageService fileStorageService;
+	private FileStorageService fileStorageService;
 
 	@GetMapping("/current")
 	User getCurrent(@AuthenticationPrincipal final User user) {
 		return user;
 	}
-	
-    @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@AuthenticationPrincipal final User user, @RequestParam("file") MultipartFile file) throws UserAlreadyFoundException {
-        String fileName = fileStorageService.storeFile(file);
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/users/downloadFile/")
-                .path(fileName)
-                .toUriString();
-        
-        user.setAvatar(fileDownloadUri);
-        users.save(user);
-        
-        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());
-    }
+	@PostMapping("/uploadFile")
+	public UploadFileResponse uploadFile(@AuthenticationPrincipal final User user,
+			@RequestParam("file") MultipartFile file) throws UserAlreadyFoundException {
+		String fileName = fileStorageService.storeFile(user, file);
 
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-        // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/downloadFile/")
+				.path(fileName).toUriString();
 
-        // Try to determine file's content type
-        String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex) {
-            logger.info("Could not determine file type.");
-        }
+		user.setAvatar(fileDownloadUri);
+		users.save(user);
 
-        // Fallback to the default content type if type could not be determined
-        if(contentType == null) {
-            contentType = "application/octet-stream";
-        }
+		return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+	}
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
-    }
+	@GetMapping("/downloadFile/{fileName:.+}")
+	public ResponseEntity<byte[]> downloadFile(@AuthenticationPrincipal final User user, @PathVariable String fileName,
+			HttpServletRequest request) {
 
+		HttpHeaders headers = new HttpHeaders();
+		headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+
+		byte[] media = user.getProfileImage();
+
+		ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(media, headers, HttpStatus.OK);
+		return responseEntity;
+	}
 
 	@GetMapping("/logout")
 	boolean logout(@AuthenticationPrincipal final User user) {
