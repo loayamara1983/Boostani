@@ -40,6 +40,7 @@ com\boostani\backend\api\web\controller\FundEmailController.class
 com\boostani\backend\api\BoostaniApplication.class
 com\boostani\backend\api\service\merchant\MerchantsService.class
 com\boostani\backend\api\service\user\TokenService.class
+com\boostani\backend\api\web\response\campaign\CampaignBannerType.class
 com\boostani\backend\api\web\controller\AffilateCampaignsController.class
 com\boostani\backend\api\persistance\dao\CategoryRepository.class
 com\boostani\backend\api\persistance\model\UsersService.class
@@ -58,6 +59,7 @@ com\boostani\backend\api\service\email\EmailService.class
 com\boostani\backend\api\web\response\campaign\Banners.class
 com\boostani\backend\api\web\response\user\UserResponse.class
 com\boostani\backend\api\persistance\dao\UserRepository.class
+com\boostani\backend\api\web\response\campaign\LinkingMethod.class
 com\boostani\backend\api\persistance\model\Country.class
 com\boostani\backend\api\web\response\affilate\AffilateListResponse.class
 com\boostani\backend\api\service\country\CountryService.class

@@ -18,6 +18,7 @@ C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\b
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\Campaign.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\campaign\CampaignService.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\CompainsThisMonthComisions.java
+C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\CampaignBannerType.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\CompainsComisionsStats.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\Banners.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\storage\FileStorageService.java
@@ -63,6 +64,7 @@ C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\b
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\user\JWTTokenService.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\date\JodaDateService.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\request\UserRegisterRequest.java
+C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\web\response\campaign\LinkingMethod.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\persistance\model\UserAuthority.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\user\TokenAuthenticationService.java
 C:\Users\mbc-user\git\Boostani\Boostani\backend-api\src\main\java\com\boostani\backend\api\service\user\UserAuthenticationService.java
