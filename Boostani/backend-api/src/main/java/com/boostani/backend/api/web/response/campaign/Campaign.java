@@ -1,6 +1,7 @@
 package com.boostani.backend.api.web.response.campaign;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -27,10 +28,10 @@ public class Campaign implements Serializable {
 	private String logoUrl;
 	private String cookieLifetime;
 	private String longDescriptionExists;
-	private CampaignBanner banner;
+	private List<CampaignBanner> banners;
 	private String commissionsExist;
 	private String commissionsDetails;
-
+	
 	public String getId() {
 		return id;
 	}
@@ -95,14 +96,12 @@ public class Campaign implements Serializable {
 		this.longDescriptionExists = longDescriptionExists;
 	}
 
-	
-
-	public CampaignBanner getBanner() {
-		return banner;
+	public List<CampaignBanner> getBanners() {
+		return banners;
 	}
 
-	public void setBanner(CampaignBanner banner) {
-		this.banner = banner;
+	public void setBanners(List<CampaignBanner> banners) {
+		this.banners = banners;
 	}
 
 	public String getCommissionsExist() {

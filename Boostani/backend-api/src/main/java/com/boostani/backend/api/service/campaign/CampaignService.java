@@ -93,7 +93,10 @@ public class CampaignService extends MerchantsService {
 
 		campaign.setId(fields.get(0).get(1).toString());
 		campaign.setCampaignId(fields.get(1).get(1).toString());
-		campaign.setStatus(fields.get(3).get(1).toString());
+		
+		String status = fields.get(3).get(1) != null && fields.get(3).get(1).equals("A") ? "Active" : "Inactive";
+		campaign.setStatus(status);
+		
 		campaign.setName(fields.get(4).get(1).toString());
 		campaign.setDescription(fields.get(5).get(1).toString());
 
@@ -104,11 +107,11 @@ public class CampaignService extends MerchantsService {
 
 		campaign.setLogoUrl(logoUrl);
 		campaign.setCookieLifetime(fields.get(20).get(1).toString());
-		banners.stream()
-				.filter(banner -> banner.getCampaignId().equals(campaign.getId()) && banner.getType().equals("I"))
-				.findFirst().ifPresent(imageBanner -> {
-					campaign.setBanner(imageBanner);
-				});
+		
+		List<CampaignBanner> campainBanners = banners.stream()
+				.filter(banner -> banner.getCampaignId().equals(campaign.getId())).collect(Collectors.toList());
+		campaign.setBanners(campainBanners);	
+		
 		campaign.setCommissionsDetails(getCommissionsByCampainId(sessionId, campaign.getCampaignId()));
 
 		return campaign;
@@ -180,11 +183,9 @@ public class CampaignService extends MerchantsService {
 			campaign.setLogoUrl(logoUrl);
 			campaign.setCookieLifetime(row.get(18));
 
-			banners.stream()
-					.filter(banner -> banner.getCampaignId().equals(campaign.getId()) && banner.getType().equals("I"))
-					.findFirst().ifPresent(imageBanner -> {
-						campaign.setBanner(imageBanner);
-					});
+			List<CampaignBanner> campainBanners = banners.stream()
+					.filter(banner -> banner.getCampaignId().equals(campaign.getId())).collect(Collectors.toList());
+			campaign.setBanners(campainBanners);	
 
 			String commissions = getCommissionsByCampainId(sessionId, campaign.getCampaignId());
 			campaign.setCommissionsDetails(commissions);

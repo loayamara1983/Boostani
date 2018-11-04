@@ -3,6 +3,7 @@ package com.boostani.backend.api.service.merchant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import com.boostani.backend.api.web.response.campaign.Banners;
 import com.boostani.backend.api.web.response.campaign.Campaign;
 import com.boostani.backend.api.web.response.campaign.CampaignBanner;
+import com.boostani.backend.api.web.response.campaign.CampaignBannerType;
 import com.boostani.backend.api.web.response.campaign.Login;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -49,7 +51,7 @@ public class MerchantsService {
 
 		return headers;
 	}
-	
+
 	public String getDefaultUrl() {
 		return env.getProperty("com.boostani.base.url");
 	}
@@ -114,14 +116,20 @@ public class MerchantsService {
 			String status = row.get(6) != null && row.get(6).equals("A") ? "Active" : "Inactive";
 			campaignBanner.setStatus(status);
 
-			campaignBanner.setType(row.get(5));
-			
+			String type = row.get(5);
+
+			campaignBanner.setType(CampaignBannerType.getType(type));
+
 			String bannerUrl = row.get(14);
 			if (StringUtils.isNotBlank(bannerUrl) && !StringUtils.startsWith(bannerUrl, "http://")) {
 				bannerUrl = "http:" + bannerUrl;
 			}
+
+			if (type.equals("I")) {
+				campaignBanner.setUrl(bannerUrl);
+			}
 			
-			campaignBanner.setUrl(bannerUrl);
+			campaignBanner.setDestinationUrl(row.get(10));
 
 			campaignsBanners.add(campaignBanner);
 		}
@@ -129,7 +137,8 @@ public class MerchantsService {
 		return campaignsBanners;
 	}
 
-	protected List<Campaign> populateCampaigns(String sessionId, List<List<String>> rows, List<CampaignBanner> banners) {
+	protected List<Campaign> populateCampaigns(String sessionId, List<List<String>> rows,
+			List<CampaignBanner> banners) {
 		if (rows == null || rows.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -155,11 +164,9 @@ public class MerchantsService {
 			campaign.setLogoUrl(logoUrl);
 			campaign.setCookieLifetime(row.get(6));
 
-			banners.stream()
-					.filter(banner -> banner.getCampaignId().equals(campaign.getId()) && banner.getType().equals("I"))
-					.findFirst().ifPresent(imageBanner -> {
-						campaign.setBanner(imageBanner);
-					});
+			List<CampaignBanner> campainBanners = banners.stream()
+					.filter(banner -> banner.getCampaignId().equals(campaign.getId())).collect(Collectors.toList());
+			campaign.setBanners(campainBanners);
 
 			String commissions = getCommissionsByCampainId(sessionId, campaign.getCampaignId());
 			campaign.setCommissionsDetails(commissions);

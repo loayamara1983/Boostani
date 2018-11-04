@@ -1,7 +1,10 @@
 package com.boostani.backend.api.web.response.campaign;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+@JsonInclude(Include.NON_EMPTY)
 public class CampaignBanner {
 
 	@JsonIgnore
@@ -14,10 +17,12 @@ public class CampaignBanner {
 	
 	private String url;
 	
-	@JsonIgnore
+//	@JsonIgnore
 	private String type;
 	
 	private String status;
+	
+	private String destinationUrl;
 
 	public String getId() {
 		return id;
@@ -65,6 +70,14 @@ public class CampaignBanner {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getDestinationUrl() {
+		return destinationUrl;
+	}
+
+	public void setDestinationUrl(String destinationUrl) {
+		this.destinationUrl = destinationUrl;
 	}
 
 	@Override

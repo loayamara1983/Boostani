@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheConfig;
@@ -26,8 +27,8 @@ import com.boostani.backend.api.web.response.campaign.Campaigns;
 public class AffliateService extends MerchantsService {
 
 	@Cacheable
-	public List<Campaign> findCampains(User currentUser, int pageNumber, int pageSize) throws UserNotFoundException{
-		
+	public List<Campaign> findCampains(User currentUser, int pageNumber, int pageSize) throws UserNotFoundException {
+
 		String sessionId = getAdminSessionId();
 		if (StringUtils.isBlank(sessionId)) {
 			throw new UserNotFoundException("Unauthorized access to Boostani Backend");
@@ -58,7 +59,7 @@ public class AffliateService extends MerchantsService {
 		List<Campaign> campaigns = populate(sessionId, rows, banners);
 		return getCampaignsForAffliate(sessionId, campaigns, currentUser);
 	}
-	
+
 	protected List<Campaign> populate(String sessionId, List<List<String>> rows, List<CampaignBanner> banners) {
 		if (rows == null || rows.isEmpty()) {
 			return Collections.emptyList();
@@ -71,10 +72,10 @@ public class AffliateService extends MerchantsService {
 
 			campaign.setId(row.get(0));
 			campaign.setCampaignId(row.get(1));
-			
+
 			String status = row.get(3) != null && row.get(3).equals("A") ? "Active" : "Inactive";
 			campaign.setStatus(status);
-			
+
 			campaign.setName(row.get(4));
 			campaign.setDescription(row.get(5));
 
@@ -86,11 +87,9 @@ public class AffliateService extends MerchantsService {
 			campaign.setLogoUrl(logoUrl);
 
 			campaign.setCookieLifetime(row.get(18));
-			banners.stream()
-					.filter(banner -> banner.getCampaignId().equals(campaign.getId()) && banner.getType().equals("I"))
-					.findFirst().ifPresent(imageBanner -> {
-						campaign.setBanner(imageBanner);
-					});
+			List<CampaignBanner> campainBanners = banners.stream()
+					.filter(banner -> banner.getCampaignId().equals(campaign.getId())).collect(Collectors.toList());
+			campaign.setBanners(campainBanners);
 
 			campaign.setCommissionsDetails(getCommissionsByCampainId(sessionId, campaign.getCampaignId()));
 
@@ -100,7 +99,6 @@ public class AffliateService extends MerchantsService {
 		return campaigns;
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	private List<Campaign> getCampaignsForAffliate(String sessionId, List<Campaign> campaigns, User currentUser) {
 		if (campaigns == null || campaigns.isEmpty()) {
@@ -119,7 +117,8 @@ public class AffliateService extends MerchantsService {
 			String formData = String.format(campaignsListFormRequestData, campaignId, sessionId);
 			map.add("D", formData);
 
-			ResponseEntity<List> campaignAffliatesResponse = restTemplate.postForEntity(getDefaultUrl(), request, List.class);
+			ResponseEntity<List> campaignAffliatesResponse = restTemplate.postForEntity(getDefaultUrl(), request,
+					List.class);
 			List<List<String>> rows = campaignAffliatesResponse.getBody();
 			if (rows == null || rows.isEmpty()) {
 				continue;
