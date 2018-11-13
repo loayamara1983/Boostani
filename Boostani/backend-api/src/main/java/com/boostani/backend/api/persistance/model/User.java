@@ -3,6 +3,7 @@ package com.boostani.backend.api.persistance.model;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -75,9 +76,9 @@ public class User implements UserDetails {
 	private String phoneNumber;
 
 	private String country;
-	
+
 	private String avatar;
-	
+
 	@JsonIgnore
 	@Lob
 	private byte[] profileImage;
@@ -97,11 +98,12 @@ public class User implements UserDetails {
 
 	@NotNull
 	private boolean accountEnabled;
-	
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = false)
+	private List<Category> categories;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
 	private Set<UserAuthority> authorities;
-	
-	
 
 	public Long getId() {
 		return id;
@@ -141,7 +143,7 @@ public class User implements UserDetails {
 	}
 
 	public void grantRole(UserRole role) {
-		if(authorities==null) {
+		if (authorities == null) {
 			authorities = new HashSet<>();
 		}
 		authorities.add(role.asAuthorityFor(this));
@@ -242,7 +244,7 @@ public class User implements UserDetails {
 	public void setExpires(long expires) {
 		this.expires = expires;
 	}
-	
+
 	public User() {
 		super();
 	}
@@ -377,10 +379,27 @@ public class User implements UserDetails {
 		this.profileImage = profileImage;
 	}
 
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
+	}
+
 	public User(Long id, String providerId, String providerUserId, String accessToken, String username, String password,
 			String firstName, String lastName, String email, Date birthDate, String phoneNumber, String country,
 			String avatar, byte[] profileImage, long expires, boolean accountExpired, boolean accountLocked,
-			boolean credentialsExpired, boolean accountEnabled, Set<UserAuthority> authorities) {
+			boolean credentialsExpired, boolean accountEnabled, List<Category> categories,
+			Set<UserAuthority> authorities) {
 		super();
 		this.id = id;
 		this.providerId = providerId;
@@ -401,16 +420,8 @@ public class User implements UserDetails {
 		this.accountLocked = accountLocked;
 		this.credentialsExpired = credentialsExpired;
 		this.accountEnabled = accountEnabled;
+		this.categories = categories;
 		this.authorities = authorities;
 	}
 
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-
-	
 }

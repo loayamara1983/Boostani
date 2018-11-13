@@ -1,9 +1,11 @@
 package com.boostani.backend.api.web.response.user;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.boostani.backend.api.persistance.model.Category;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -37,6 +39,8 @@ public class Account {
 	private String country;
 	
 	private String avatar;
+	
+	private List<Category> categories;
 
 	public String getAccessToken() {
 		return accessToken;
@@ -117,4 +121,14 @@ public class Account {
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
+	}
+	
+	
 }

@@ -26,6 +26,8 @@ import com.boostani.backend.api.service.email.EmailService;
 import com.boostani.backend.api.service.user.UserAlreadyFoundException;
 import com.boostani.backend.api.service.user.UserAuthenticationService;
 import com.boostani.backend.api.service.user.UserCrudService;
+import com.boostani.backend.api.service.user.UserNotFoundException;
+import com.boostani.backend.api.service.user.UserService;
 import com.boostani.backend.api.web.request.UserRegisterRequest;
 import com.boostani.backend.api.web.response.user.Account;
 import com.boostani.backend.api.web.response.user.UserResponse;
@@ -57,6 +59,9 @@ final class PublicUsersController {
 
 	@Autowired
 	public RestTemplate restTemplate;
+	
+	@Autowired
+	private UserService userService;
 
 	@ApiOperation(value = "Creates an account on Boostani local database", response = UserResponse.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created user account"),
@@ -72,6 +77,7 @@ final class PublicUsersController {
 			user.setMessage("New account created successfully");
 
 			sendCreatedUserEmail(request);
+			createAffliateOnExternalResource(user);
 
 			return new ResponseEntity<>(user, HttpStatus.OK);
 
@@ -86,6 +92,15 @@ final class PublicUsersController {
 			response.setMessage(e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	/**
+	 * 
+	 * @param user
+	 * @throws UserNotFoundException 
+	 */
+	private void createAffliateOnExternalResource(UserResponse user) throws UserNotFoundException {
+		userService.createAffliate(user.getAccount());
 	}
 
 	@ApiOperation(value = "login to account on Boostani by username/password", response = UserResponse.class)
@@ -135,7 +150,6 @@ final class PublicUsersController {
 			return new ResponseEntity<>(response, HttpStatus.OK);
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			e.printStackTrace();
 			response = new UserResponse();
 			response.setMessage(e.getMessage());
