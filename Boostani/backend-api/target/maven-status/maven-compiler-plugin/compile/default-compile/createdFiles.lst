@@ -9,6 +9,7 @@ com\boostani\backend\api\web\controller\FacebookUsersController.class
 com\boostani\backend\api\web\response\campaign\CampaignBanner.class
 com\boostani\backend\api\service\user\UserAuthenticationService.class
 com\boostani\backend\api\web\controller\CampaignController.class
+com\boostani\backend\api\web\request\CategoryListRequest.class
 com\boostani\backend\api\web\response\cache\CacheResponse.class
 com\boostani\backend\api\web\response\campaign\Campaigns.class
 com\boostani\backend\api\persistance\model\Category.class
@@ -48,6 +49,7 @@ com\boostani\backend\api\persistance\model\User.class
 com\boostani\backend\api\web\response\campaign\CompainStats.class
 com\boostani\backend\api\config\SwaggerConfig.class
 com\boostani\backend\api\web\response\country\CountryResponse.class
+com\boostani\backend\api\service\user\UserService.class
 com\boostani\backend\api\config\FileStorageProperties.class
 com\boostani\backend\api\service\campaign\CampaignService.class
 com\boostani\backend\api\service\user\UserAlreadyFoundException.class
