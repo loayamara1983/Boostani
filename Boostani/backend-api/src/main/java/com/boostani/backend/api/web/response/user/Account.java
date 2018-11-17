@@ -2,6 +2,7 @@ package com.boostani.backend.api.web.response.user;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -40,7 +41,7 @@ public class Account {
 	
 	private String avatar;
 	
-	private List<Category> categories;
+	private Set<Category> categories;
 
 	public String getAccessToken() {
 		return accessToken;
@@ -122,11 +123,11 @@ public class Account {
 		this.avatar = avatar;
 	}
 
-	public List<Category> getCategories() {
+	public Set<Category> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(List<Category> categories) {
+	public void setCategories(Set<Category> categories) {
 		this.categories = categories;
 	}
 	

@@ -3,7 +3,6 @@ package com.boostani.backend.api.persistance.model;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,10 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -30,7 +29,7 @@ import lombok.Builder;
 
 @Builder
 @Entity
-@Table(name = "user_account", uniqueConstraints = { @UniqueConstraint(columnNames = { "username" }) })
+@Table(name = "user_account" )
 public class User implements UserDetails {
 
 	/**
@@ -99,8 +98,8 @@ public class User implements UserDetails {
 	@NotNull
 	private boolean accountEnabled;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = false)
-	private List<Category> categories;
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Category> categories;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
 	private Set<UserAuthority> authorities;
@@ -387,18 +386,18 @@ public class User implements UserDetails {
 		this.avatar = avatar;
 	}
 
-	public List<Category> getCategories() {
+	public Set<Category> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(List<Category> categories) {
+	public void setCategories(Set<Category> categories) {
 		this.categories = categories;
 	}
 
 	public User(Long id, String providerId, String providerUserId, String accessToken, String username, String password,
 			String firstName, String lastName, String email, Date birthDate, String phoneNumber, String country,
 			String avatar, byte[] profileImage, long expires, boolean accountExpired, boolean accountLocked,
-			boolean credentialsExpired, boolean accountEnabled, List<Category> categories,
+			boolean credentialsExpired, boolean accountEnabled, Set<Category> categories,
 			Set<UserAuthority> authorities) {
 		super();
 		this.id = id;

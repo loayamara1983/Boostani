@@ -19,7 +19,7 @@ public class Category {
     private String description;
     
     private Long externalId;
-
+    
     public Category() {
         super();
     }

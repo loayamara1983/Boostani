@@ -1,6 +1,6 @@
 package com.boostani.backend.api.web.request;
 
-import java.util.List;
+import java.util.Set;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -14,13 +14,13 @@ import com.boostani.backend.api.persistance.model.Category;
 public class CategoryListRequest {
 	
     @NotEmpty
-    private List<Category> categories;
+    private Set<Category> categories;
 
-	public List<Category> getCategories() {
+	public Set<Category> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(List<Category> categories) {
+	public void setCategories(Set<Category> categories) {
 		this.categories = categories;
 	}
 

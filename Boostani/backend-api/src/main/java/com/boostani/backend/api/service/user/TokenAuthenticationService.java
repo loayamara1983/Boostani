@@ -39,6 +39,6 @@ final class TokenAuthenticationService implements UserAuthenticationService {
 
 	@Override
 	public void logout(final User user) {
-		// Nothing to doy
+		// Nothing to do
 	}
 }

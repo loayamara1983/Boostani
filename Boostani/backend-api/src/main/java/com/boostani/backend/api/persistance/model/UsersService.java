@@ -22,8 +22,7 @@ final class UsersService implements UserCrudService {
 	public User save(final User user) throws UserAlreadyFoundException {
 
 		try {
-			User newUser = userRepository.save(user);
-			return newUser;
+			return userRepository.saveAndFlush(user);
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			throw new UserAlreadyFoundException(e.getMessage());

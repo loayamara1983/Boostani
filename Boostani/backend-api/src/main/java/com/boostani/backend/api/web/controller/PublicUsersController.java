@@ -143,7 +143,8 @@ final class PublicUsersController {
 			account.setPhoneNumber(user.getPhoneNumber());
 			account.setCountry(user.getCountry());
 			account.setAvatar(user.getAvatar());
-
+			account.setCategories(user.getCategories());
+			
 			response.setAccount(account);
 			response.setMessage("User logged in");
 

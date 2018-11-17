@@ -61,7 +61,7 @@ final class SecuredUsersController {
 
 	@Autowired
 	private FileStorageService fileStorageService;
-
+	
 	@GetMapping("/current")
 	User getCurrent(@AuthenticationPrincipal final User user) {
 		return user;
@@ -107,19 +107,19 @@ final class SecuredUsersController {
 		
 		try {
 			user.setCategories(categories.getCategories());
-			users.save(user);
+			User currentUser = users.save(user);
 			
 			Account account = new Account();
 
-			account.setUsername(user.getUsername());
-			account.setFirstName(user.getFirstName());
-			account.setLastName(user.getLastName());
-			account.setEmail(user.getEmail());
-			account.setBirthDate(user.getBirthDate());
-			account.setPhoneNumber(user.getPhoneNumber());
-			account.setCountry(user.getCountry());
-			account.setAvatar(user.getAvatar());
-			account.setCategories(user.getCategories());
+			account.setUsername(currentUser.getUsername());
+			account.setFirstName(currentUser.getFirstName());
+			account.setLastName(currentUser.getLastName());
+			account.setEmail(currentUser.getEmail());
+			account.setBirthDate(currentUser.getBirthDate());
+			account.setPhoneNumber(currentUser.getPhoneNumber());
+			account.setCountry(currentUser.getCountry());
+			account.setAvatar(currentUser.getAvatar());
+			account.setCategories(currentUser.getCategories());
 			
 			response.setAccount(account);
 			
