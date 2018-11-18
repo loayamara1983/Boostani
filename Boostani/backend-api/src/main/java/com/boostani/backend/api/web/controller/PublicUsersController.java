@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.boostani.backend.api.persistance.model.User;
+import com.boostani.backend.api.service.country.CountryService;
 import com.boostani.backend.api.service.email.EmailService;
 import com.boostani.backend.api.service.user.UserAlreadyFoundException;
 import com.boostani.backend.api.service.user.UserAuthenticationService;
@@ -59,9 +60,12 @@ final class PublicUsersController {
 
 	@Autowired
 	public RestTemplate restTemplate;
-	
+
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private CountryService countryService;
 
 	@ApiOperation(value = "Creates an account on Boostani local database", response = UserResponse.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created user account"),
@@ -73,13 +77,13 @@ final class PublicUsersController {
 	public @ResponseBody ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserRegisterRequest request) {
 
 		try {
-			UserResponse user = register(request);
-			user.setMessage("New account created successfully");
+			UserResponse userResponse = register(request);
+			userResponse.setMessage("New account created successfully");
 
 			sendCreatedUserEmail(request);
-			createAffliateOnExternalResource(user);
+			createAffliateOnExternalResource(userResponse.getAccount());
 
-			return new ResponseEntity<>(user, HttpStatus.OK);
+			return new ResponseEntity<>(userResponse, HttpStatus.OK);
 
 		} catch (UserAlreadyFoundException e) {
 			e.printStackTrace();
@@ -97,10 +101,13 @@ final class PublicUsersController {
 	/**
 	 * 
 	 * @param user
-	 * @throws UserNotFoundException 
+	 * @throws UserNotFoundException
 	 */
-	private void createAffliateOnExternalResource(UserResponse user) throws UserNotFoundException {
-		userService.createAffliate(user.getAccount());
+	private void createAffliateOnExternalResource(Account account) throws UserNotFoundException {
+		User user = User.builder().username(account.getUsername()).firstName(account.getFirstName())
+				.lastName(account.getLastName()).country(account.getCountry()).phoneNumber(account.getPhoneNumber())
+				.build();
+		userService.createAffliate(user);
 	}
 
 	@ApiOperation(value = "login to account on Boostani by username/password", response = UserResponse.class)
@@ -142,9 +149,10 @@ final class PublicUsersController {
 			account.setBirthDate(user.getBirthDate());
 			account.setPhoneNumber(user.getPhoneNumber());
 			account.setCountry(user.getCountry());
+			account.setCurrency(user.getCurrency());
 			account.setAvatar(user.getAvatar());
 			account.setCategories(user.getCategories());
-			
+
 			response.setAccount(account);
 			response.setMessage("User logged in");
 
@@ -160,7 +168,8 @@ final class PublicUsersController {
 
 	private UserResponse register(UserRegisterRequest request) throws UserAlreadyFoundException {
 		User user = User.builder().username(request.getUsername()).password(request.getPassword())
-				.email(request.getEmail()).country(request.getCountry()).firstName(request.getFirstName())
+				.email(request.getEmail()).country(request.getCountry())
+				.currency(countryService.currency(request.getCountry())).firstName(request.getFirstName())
 				.lastName(request.getLastName()).birthDate(request.getBirthDate()).phoneNumber(request.getPhoneNumber())
 				.build();
 

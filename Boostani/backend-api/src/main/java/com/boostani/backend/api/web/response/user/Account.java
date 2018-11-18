@@ -1,7 +1,6 @@
 package com.boostani.backend.api.web.response.user;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -38,6 +37,8 @@ public class Account {
 	private String phoneNumber;
 
 	private String country;
+	
+	private String currency;
 	
 	private String avatar;
 	
@@ -130,6 +131,13 @@ public class Account {
 	public void setCategories(Set<Category> categories) {
 		this.categories = categories;
 	}
-	
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
 	
 }

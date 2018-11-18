@@ -21,6 +21,8 @@ import com.boostani.backend.api.service.email.EmailService;
 import com.boostani.backend.api.service.user.UserAlreadyFoundException;
 import com.boostani.backend.api.service.user.UserAuthenticationService;
 import com.boostani.backend.api.service.user.UserCrudService;
+import com.boostani.backend.api.service.user.UserNotFoundException;
+import com.boostani.backend.api.service.user.UserService;
 import com.boostani.backend.api.web.response.user.Account;
 import com.boostani.backend.api.web.response.user.UserResponse;
 import com.restfb.DefaultFacebookClient;
@@ -46,6 +48,9 @@ final class FacebookUsersController {
 
 	@NonNull
 	UserCrudService users;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private Environment env;
@@ -74,6 +79,7 @@ final class FacebookUsersController {
 
 		try {
 			UserResponse userResponse = register(facebookUser);
+
 			if (userResponse == null || userResponse.getAccount() == null) {
 				userResponse = new UserResponse();
 				userResponse.setMessage("Invalid user access token, we couldn't find the facebook details");
@@ -132,6 +138,7 @@ final class FacebookUsersController {
 			account.setPhoneNumber(user.getPhoneNumber());
 			account.setCountry(user.getCountry());
 			account.setAvatar(user.getAvatar());
+			account.setCategories(user.getCategories());
 
 			response.setAccount(account);
 			response.setMessage("User logged in");
@@ -161,7 +168,7 @@ final class FacebookUsersController {
 				user = existsUser.get();
 				user.setId(existsUser.get().getId());
 			} else {
-
+				createAffliateOnExternalResource(user);
 				sendCreatedUserEmail(facebookUser);
 			}
 
@@ -172,6 +179,16 @@ final class FacebookUsersController {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * 
+	 * @param user
+	 * @throws UserNotFoundException
+	 */
+	private void createAffliateOnExternalResource(com.boostani.backend.api.persistance.model.User user)
+			throws UserNotFoundException {
+		userService.createAffliate(user);
 	}
 
 	private void sendCreatedUserEmail(User facebookUser) throws Exception {

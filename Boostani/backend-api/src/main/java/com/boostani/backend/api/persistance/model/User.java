@@ -75,6 +75,8 @@ public class User implements UserDetails {
 	private String phoneNumber;
 
 	private String country;
+	
+	private String currency;
 
 	private String avatar;
 
@@ -243,6 +245,8 @@ public class User implements UserDetails {
 	public void setExpires(long expires) {
 		this.expires = expires;
 	}
+	
+	
 
 	public User() {
 		super();
@@ -394,10 +398,18 @@ public class User implements UserDetails {
 		this.categories = categories;
 	}
 
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
 	public User(Long id, String providerId, String providerUserId, String accessToken, String username, String password,
 			String firstName, String lastName, String email, Date birthDate, String phoneNumber, String country,
-			String avatar, byte[] profileImage, long expires, boolean accountExpired, boolean accountLocked,
-			boolean credentialsExpired, boolean accountEnabled, Set<Category> categories,
+			String currency, String avatar, byte[] profileImage, long expires, boolean accountExpired,
+			boolean accountLocked, boolean credentialsExpired, boolean accountEnabled, Set<Category> categories,
 			Set<UserAuthority> authorities) {
 		super();
 		this.id = id;
@@ -412,6 +424,7 @@ public class User implements UserDetails {
 		this.birthDate = birthDate;
 		this.phoneNumber = phoneNumber;
 		this.country = country;
+		this.currency = currency;
 		this.avatar = avatar;
 		this.profileImage = profileImage;
 		this.expires = expires;

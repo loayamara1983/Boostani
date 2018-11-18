@@ -3,6 +3,7 @@ package com.boostani.backend.api.service.country;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -24,6 +25,8 @@ import com.boostani.backend.api.persistance.model.Country;
 @CacheConfig(cacheNames="countries")
 public class CountryService {
 
+	private List<Locale> availableLocales = Arrays.asList(Locale.getAvailableLocales());
+	
 	/**
 	 * 
 	 * @return
@@ -31,7 +34,6 @@ public class CountryService {
 	@Cacheable
 	public List<Country> findAll() {
 		// Get all available locales
-		List<Locale> availableLocales = Arrays.asList(Locale.getAvailableLocales());
 
 		// Get all available ISO countries
 		String[] countryCodes = Locale.getISOCountries();
@@ -55,12 +57,34 @@ public class CountryService {
 			String iso = locale.getISO3Country();
 			String code = locale.getCountry();
 			String country = locale.getDisplayCountry(locale);
-			countries.add(new Country(iso, code, country));
+			
+			Currency currency = Currency.getInstance(locale);
+			
+			countries.add(new Country(iso, code, country, currency));
 		}
 
 		// Sort countries
 		Collections.sort(countries);
 
 		return countries;
+	}
+	
+	/**
+	 * 
+	 * @param countryCode
+	 * @return
+	 */
+	public String currency(String countryCode) {
+		Optional<Locale> candidate = availableLocales.stream().filter(l -> l.getCountry().equals(countryCode))
+				.collect(Collectors.reducing((a, b) -> null));
+
+		Locale locale;
+		if (candidate.isPresent()) {
+			locale = candidate.get();
+		} else {
+			locale = new Locale("", countryCode);
+		}
+		
+		return Currency.getInstance(locale).getCurrencyCode();
 	}
 }

@@ -11,14 +11,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 
+import com.boostani.backend.api.persistance.model.User;
 import com.boostani.backend.api.service.merchant.MerchantsService;
-import com.boostani.backend.api.web.response.user.Account;
 
 @Service
 @CacheConfig(cacheNames = "users")
 public class UserService extends MerchantsService {
 
-	public boolean createAffliate(Account user) throws UserNotFoundException {
+	public boolean createAffliate(User user) throws UserNotFoundException {
 		try {
 			String sessionId = getAdminSessionId();
 			if (StringUtils.isBlank(sessionId)) {
@@ -36,8 +36,8 @@ public class UserService extends MerchantsService {
 			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, getDefaultHeaders());
 
 			ResponseEntity<Object> createResponse = restTemplate.postForEntity(getDefaultUrl(), request, Object.class);
-			return createResponse.getStatusCodeValue()==200;
-			
+			return createResponse.getStatusCodeValue() == 200;
+
 		} catch (RestClientException e) {
 			e.printStackTrace();
 			return false;
