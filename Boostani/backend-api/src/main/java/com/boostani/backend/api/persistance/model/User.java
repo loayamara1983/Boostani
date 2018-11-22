@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Email;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -57,6 +58,7 @@ public class User implements UserDetails {
 
 	@NotNull
 	@Size(min = 4, max = 30)
+	@Email
 	private String username;
 
 	@JsonIgnore
@@ -66,7 +68,10 @@ public class User implements UserDetails {
 
 	private String lastName;
 
+	@Email
 	private String email;
+	
+	private String referralId;
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "CET")
@@ -406,9 +411,17 @@ public class User implements UserDetails {
 		this.currency = currency;
 	}
 
+	public String getReferralId() {
+		return referralId;
+	}
+
+	public void setReferralId(String referralId) {
+		this.referralId = referralId;
+	}
+
 	public User(Long id, String providerId, String providerUserId, String accessToken, String username, String password,
-			String firstName, String lastName, String email, Date birthDate, String phoneNumber, String country,
-			String currency, String avatar, byte[] profileImage, long expires, boolean accountExpired,
+			String firstName, String lastName, String email, String referralId, Date birthDate, String phoneNumber,
+			String country, String currency, String avatar, byte[] profileImage, long expires, boolean accountExpired,
 			boolean accountLocked, boolean credentialsExpired, boolean accountEnabled, Set<Category> categories,
 			Set<UserAuthority> authorities) {
 		super();
@@ -421,6 +434,7 @@ public class User implements UserDetails {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.referralId = referralId;
 		this.birthDate = birthDate;
 		this.phoneNumber = phoneNumber;
 		this.country = country;
@@ -436,4 +450,5 @@ public class User implements UserDetails {
 		this.authorities = authorities;
 	}
 
+	
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class UserRegisterRequest {
 
 	@NotEmpty
+	@Email(message="Enter valid email address")
 	private String username;
 
 	@Size(min = 6, message = "must be at least 6 characters")
@@ -22,6 +24,7 @@ public class UserRegisterRequest {
 	@NotEmpty
 	private String lastName;
 	
+	@Email(message="Enter valid email address")
 	private String email;
     
 	@DateTimeFormat(pattern = "dd/MM/yyyy")

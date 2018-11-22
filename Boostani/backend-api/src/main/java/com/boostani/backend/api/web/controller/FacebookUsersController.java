@@ -134,6 +134,7 @@ final class FacebookUsersController {
 			account.setFirstName(user.getFirstName());
 			account.setLastName(user.getLastName());
 			account.setEmail(user.getEmail());
+			account.setReferralId(user.getReferralId());
 			account.setBirthDate(user.getBirthDate());
 			account.setPhoneNumber(user.getPhoneNumber());
 			account.setCountry(user.getCountry());
@@ -156,14 +157,15 @@ final class FacebookUsersController {
 		try {
 			com.boostani.backend.api.persistance.model.User user = null;
 
-			user = com.boostani.backend.api.persistance.model.User.builder().username(facebookUser.getName())
+			user = com.boostani.backend.api.persistance.model.User.builder().username(facebookUser.getEmail())
 					.password(facebookUser.getId()).email(facebookUser.getEmail())
 					.firstName(facebookUser.getFirstName()).lastName(facebookUser.getLastName())
-					.birthDate(facebookUser.getBirthdayAsDate()).providerId("facebook")
+					.referralId("ref_" + facebookUser.getFirstName()).birthDate(facebookUser.getBirthdayAsDate())
+					.providerId("facebook")
 					.avatar(facebookUser.getPicture() == null ? null : facebookUser.getPicture().getUrl()).build();
 
 			Optional<com.boostani.backend.api.persistance.model.User> existsUser = users
-					.findByUsername(facebookUser.getName());
+					.findByUsername(facebookUser.getEmail());
 			if (existsUser.isPresent()) {
 				user = existsUser.get();
 				user.setId(existsUser.get().getId());
@@ -173,7 +175,7 @@ final class FacebookUsersController {
 			}
 
 			users.save(user);
-			return login(facebookUser.getName(), facebookUser.getId());
+			return login(facebookUser.getEmail(), facebookUser.getId());
 
 		} catch (Exception e) {
 			e.printStackTrace();

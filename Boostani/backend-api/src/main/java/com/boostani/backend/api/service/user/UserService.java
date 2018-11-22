@@ -1,7 +1,5 @@
 package com.boostani.backend.api.service.user;
 
-import java.util.UUID;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.http.HttpEntity;
@@ -29,7 +27,7 @@ public class UserService extends MerchantsService {
 
 			String createRequestData = env.getProperty("com.boostani.request.affilate.create");
 			String formData = String.format(createRequestData, user.getUsername(), "", user.getFirstName(),
-					user.getLastName(), "P", UUID.randomUUID().toString(), user.getCountry(), user.getPhoneNumber(),
+					user.getLastName(), "A", user.getReferralId(), user.getCountry(), user.getPhoneNumber(),
 					sessionId);
 			map.add("D", formData);
 

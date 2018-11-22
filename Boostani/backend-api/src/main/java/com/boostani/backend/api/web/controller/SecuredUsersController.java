@@ -115,6 +115,7 @@ final class SecuredUsersController {
 			account.setFirstName(currentUser.getFirstName());
 			account.setLastName(currentUser.getLastName());
 			account.setEmail(currentUser.getEmail());
+			account.setReferralId(currentUser.getReferralId());
 			account.setBirthDate(currentUser.getBirthDate());
 			account.setPhoneNumber(currentUser.getPhoneNumber());
 			account.setCountry(currentUser.getCountry());

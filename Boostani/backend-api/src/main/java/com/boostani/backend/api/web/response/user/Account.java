@@ -29,6 +29,8 @@ public class Account {
 	private String lastName;
 
 	private String email;
+	
+	private String referralId;
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "CET")
@@ -139,5 +141,15 @@ public class Account {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
+
+	public String getReferralId() {
+		return referralId;
+	}
+
+	public void setReferralId(String referralId) {
+		this.referralId = referralId;
+	}
+	
+	
 	
 }

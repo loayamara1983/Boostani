@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_EMPTY)
 public class CampaignBanner {
 
-	@JsonIgnore
 	private String id;
 	
 	private String name;
@@ -17,7 +16,6 @@ public class CampaignBanner {
 	
 	private String url;
 	
-//	@JsonIgnore
 	private String type;
 	
 	private String status;
