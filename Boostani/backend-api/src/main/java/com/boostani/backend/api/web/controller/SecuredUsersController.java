@@ -119,6 +119,7 @@ final class SecuredUsersController {
 			account.setBirthDate(currentUser.getBirthDate());
 			account.setPhoneNumber(currentUser.getPhoneNumber());
 			account.setCountry(currentUser.getCountry());
+			account.setCurrency(currentUser.getCurrency());
 			account.setAvatar(currentUser.getAvatar());
 			account.setCategories(currentUser.getCategories());
 			

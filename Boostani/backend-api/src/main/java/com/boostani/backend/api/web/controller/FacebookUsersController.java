@@ -138,6 +138,7 @@ final class FacebookUsersController {
 			account.setBirthDate(user.getBirthDate());
 			account.setPhoneNumber(user.getPhoneNumber());
 			account.setCountry(user.getCountry());
+			account.setCurrency(user.getCurrency());
 			account.setAvatar(user.getAvatar());
 			account.setCategories(user.getCategories());
 
