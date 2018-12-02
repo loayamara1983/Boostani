@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.boostani.backend.api.persistance.model.User;
+import com.boostani.backend.api.service.affiliate.AffliateService;
 import com.boostani.backend.api.service.country.CountryService;
 import com.boostani.backend.api.service.email.EmailService;
 import com.boostani.backend.api.service.user.UserAlreadyFoundException;
@@ -68,6 +69,9 @@ final class PublicUsersController {
 	@Autowired
 	private CountryService countryService;
 
+	@Autowired
+	AffliateService affliateService;
+
 	@ApiOperation(value = "Creates an account on Boostani local database", response = UserResponse.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created user account"),
 			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
@@ -91,11 +95,11 @@ final class PublicUsersController {
 			UserResponse response = new UserResponse();
 			response.setMessage("User is already registered!!");
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}catch (IncorrectResultSizeDataAccessException e) {
+		} catch (IncorrectResultSizeDataAccessException e) {
 			e.printStackTrace();
 			UserResponse response = new UserResponse();
 			response.setMessage("User is already registered!!");
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); 
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			e.printStackTrace();
 			UserResponse response = new UserResponse();
@@ -112,7 +116,7 @@ final class PublicUsersController {
 	private void createAffliateOnExternalResource(Account account) throws UserNotFoundException {
 		User user = User.builder().username(account.getUsername()).firstName(account.getFirstName())
 				.lastName(account.getLastName()).country(account.getCountry()).phoneNumber(account.getPhoneNumber())
-				.referralId("ref_"+account.getFirstName()).build();
+				.referralId("ref_" + account.getFirstName()).build();
 		userService.createAffliate(user);
 	}
 
@@ -153,6 +157,10 @@ final class PublicUsersController {
 			account.setLastName(user.getLastName());
 			account.setEmail(user.getEmail());
 			account.setReferralId(user.getReferralId());
+
+			String affliateBalance = affliateService.getBalanceForAffliate(user);
+			account.setAffliateBalance(affliateBalance);
+
 			account.setBirthDate(user.getBirthDate());
 			account.setPhoneNumber(user.getPhoneNumber());
 			account.setCountry(user.getCountry());
@@ -178,7 +186,7 @@ final class PublicUsersController {
 				.email(request.getEmail()).country(request.getCountry())
 				.currency(countryService.currency(request.getCountry())).firstName(request.getFirstName())
 				.lastName(request.getLastName()).birthDate(request.getBirthDate()).phoneNumber(request.getPhoneNumber())
-				.referralId("refId_"+request.getFirstName()).build();
+				.referralId("refId_" + request.getFirstName()).build();
 
 		users.save(user);
 

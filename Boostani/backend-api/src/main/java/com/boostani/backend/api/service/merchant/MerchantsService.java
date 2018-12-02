@@ -78,10 +78,32 @@ public class MerchantsService {
 
 		return fields.get(7).get(1);
 	}
+	
+	public String getAffiliateSessionId(String username, String password) {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+
+		String sessionIdFormData = env.getProperty("com.boostani.request.session.id");
+		String formData = String.format(sessionIdFormData, username, password, "A");
+		map.add("D", formData);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map,
+				getDefaultHeaders());
+
+		ResponseEntity<Login> response = restTemplate.postForEntity(getDefaultUrl(), request, Login.class);
+
+		List<List<String>> fields = response.getBody().getFields();
+		if (fields.size() < 8) {
+			return null;
+		}
+
+		return fields.get(7).get(1);
+	}
 
 	@SuppressWarnings("rawtypes")
 	protected List<CampaignBanner> getAllBanners(String sessionId) {
 		String url = env.getProperty("com.boostani.base.url");
+		String destinationUrl = env.getProperty("com.boostani.request.campain.by.banner.destinationUrl");
+		
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
 		String listFormRequestData = env.getProperty("com.boostani.request.campain.by.banner.list.form");
@@ -129,7 +151,8 @@ public class MerchantsService {
 				campaignBanner.setUrl(bannerUrl);
 			}
 			
-			campaignBanner.setDestinationUrl(row.get(10));
+			//campaignBanner.setDestinationUrl(row.get(10));
+			campaignBanner.setDestinationUrl(destinationUrl);
 
 			campaignsBanners.add(campaignBanner);
 		}

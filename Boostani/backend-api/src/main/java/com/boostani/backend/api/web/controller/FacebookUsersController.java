@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.boostani.backend.api.service.affiliate.AffliateService;
 import com.boostani.backend.api.service.email.EmailService;
 import com.boostani.backend.api.service.user.UserAlreadyFoundException;
 import com.boostani.backend.api.service.user.UserAuthenticationService;
@@ -57,6 +58,9 @@ final class FacebookUsersController {
 
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	AffliateService affliateService;
 
 	@ApiOperation(value = "Creates an account on Boostani local database", response = UserResponse.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully created user account"),
@@ -135,6 +139,10 @@ final class FacebookUsersController {
 			account.setLastName(user.getLastName());
 			account.setEmail(user.getEmail());
 			account.setReferralId(user.getReferralId());
+			
+			String affliateBalance = affliateService.getBalanceForAffliate(user);
+			account.setAffliateBalance(affliateBalance);
+			
 			account.setBirthDate(user.getBirthDate());
 			account.setPhoneNumber(user.getPhoneNumber());
 			account.setCountry(user.getCountry());

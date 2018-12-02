@@ -31,6 +31,8 @@ public class Account {
 	private String email;
 	
 	private String referralId;
+	
+	private String affliateBalance;
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "CET")
@@ -148,6 +150,14 @@ public class Account {
 
 	public void setReferralId(String referralId) {
 		this.referralId = referralId;
+	}
+
+	public String getAffliateBalance() {
+		return affliateBalance;
+	}
+
+	public void setAffliateBalance(String affliateBalance) {
+		this.affliateBalance = affliateBalance;
 	}
 	
 	

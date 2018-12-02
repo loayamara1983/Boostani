@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(path = "/cache")
 public class CacheController {
 
-	@Autowired
+//	@Autowired
 	private CacheManager cacheManager;
 	
 	@ApiOperation(value = "Evicts all caches on memory.", response = CacheResponse.class)

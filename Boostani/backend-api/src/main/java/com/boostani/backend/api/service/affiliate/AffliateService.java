@@ -139,4 +139,26 @@ public class AffliateService extends MerchantsService {
 		return affliateCampaigns;
 	}
 
+	@SuppressWarnings("rawtypes")
+	public String getBalanceForAffliate(User currentUser) throws UserNotFoundException {
+		String sessionId = getAffiliateSessionId(currentUser.getUsername(), currentUser.getPassword());
+		if (StringUtils.isBlank(sessionId)) {
+			throw new UserNotFoundException("Unauthorized access to Boostani Backend");
+		}
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+
+		String statsRequestData = env.getProperty("com.boostani.request.campain.affiliate.stats");
+		String formData = String.format(statsRequestData, sessionId);
+		map.add("D", formData);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, getDefaultHeaders());
+
+		ResponseEntity<Object> statsResponse = restTemplate.postForEntity(getDefaultUrl(), request, Object.class);
+		List statsList = (List)statsResponse.getBody();
+		List fields = (List)statsList.get(6);
+		List totalCommisions = (List)fields.get(2);
+		
+		return totalCommisions.get(1).toString();
+	}
 }
