@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 
 import com.boostani.backend.api.persistance.model.User;
 import com.boostani.backend.api.service.merchant.MerchantsService;
@@ -141,24 +142,30 @@ public class AffliateService extends MerchantsService {
 
 	@SuppressWarnings("rawtypes")
 	public String getBalanceForAffliate(User currentUser) throws UserNotFoundException {
-		String sessionId = getAffiliateSessionId(currentUser.getUsername(), currentUser.getPassword());
-		if (StringUtils.isBlank(sessionId)) {
-			throw new UserNotFoundException("Unauthorized access to Boostani Backend");
+		try {
+			String sessionId = getAffiliateSessionId(currentUser.getUsername(), currentUser.getPassword());
+			if (StringUtils.isBlank(sessionId)) {
+				throw new UserNotFoundException("Unauthorized access to Boostani Backend");
+			}
+
+			MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+
+			String statsRequestData = env.getProperty("com.boostani.request.campain.affiliate.stats");
+			String formData = String.format(statsRequestData, sessionId);
+			map.add("D", formData);
+
+			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, getDefaultHeaders());
+
+			ResponseEntity<Object> statsResponse = restTemplate.postForEntity(getDefaultUrl(), request, Object.class);
+			List statsList = (List)statsResponse.getBody();
+			List fields = (List)statsList.get(6);
+			List totalCommisions = (List)fields.get(2);
+			
+			return totalCommisions.get(1).toString();
+			
+		} catch (RestClientException e) {
+			e.printStackTrace();
+			return "0";
 		}
-
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-
-		String statsRequestData = env.getProperty("com.boostani.request.campain.affiliate.stats");
-		String formData = String.format(statsRequestData, sessionId);
-		map.add("D", formData);
-
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, getDefaultHeaders());
-
-		ResponseEntity<Object> statsResponse = restTemplate.postForEntity(getDefaultUrl(), request, Object.class);
-		List statsList = (List)statsResponse.getBody();
-		List fields = (List)statsList.get(6);
-		List totalCommisions = (List)fields.get(2);
-		
-		return totalCommisions.get(1).toString();
 	}
 }
