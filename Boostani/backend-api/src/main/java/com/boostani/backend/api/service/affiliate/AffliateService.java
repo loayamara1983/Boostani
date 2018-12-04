@@ -159,7 +159,7 @@ public class AffliateService extends MerchantsService {
 			ResponseEntity<Object> statsResponse = restTemplate.postForEntity(getDefaultUrl(), request, Object.class);
 			List statsList = (List)statsResponse.getBody();
 			List fields = (List)statsList.get(6);
-			List totalCommisions = (List)fields.get(2);
+			List totalCommisions = (List)fields.get(2); // to switch to paid put 4 instead of 2
 			
 			return totalCommisions.get(1).toString();
 			

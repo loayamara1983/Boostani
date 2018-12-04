@@ -2,6 +2,7 @@ package com.boostani.backend.api.persistance.model;
 
 import static java.util.Optional.ofNullable;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ final class UsersService implements UserCrudService {
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			throw new UserAlreadyFoundException(e.getMessage());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -39,6 +40,10 @@ final class UsersService implements UserCrudService {
 
 	@Override
 	public Optional<User> findByUsername(final String username) {
-		return ofNullable(userRepository.findByUsername(username));
+		List<User> users = userRepository.findByUsername(username);
+		if (users == null || users.isEmpty()) {
+			return Optional.empty();
+		}
+		return ofNullable(users.get(0));
 	}
 }
