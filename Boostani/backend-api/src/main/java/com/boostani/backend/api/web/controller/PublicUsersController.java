@@ -158,8 +158,11 @@ final class PublicUsersController {
 			account.setEmail(user.getEmail());
 			account.setReferralId(user.getReferralId());
 
-			String affliateBalance = affliateService.getBalanceForAffliate(user);
-			account.setAffliateBalance(affliateBalance);
+			try {
+				String affliateBalance = affliateService.getBalanceForAffliate(user);
+				account.setAffliateBalance(affliateBalance);
+			} catch (Exception e) {
+			}
 
 			account.setBirthDate(user.getBirthDate());
 			account.setPhoneNumber(user.getPhoneNumber());
